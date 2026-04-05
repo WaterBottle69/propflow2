@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en" class="is-preloading">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>PropFlow — AI Real Estate Platform for Agents</title>
+<meta name="description" content="The AI-powered real estate platform built for agents. Natural language search, client CRM, live market data — one dashboard."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="css/landing.css"/>
+</head>
+<body>
+
+<!-- ── PRELOADER ─────────────────────────────────────────────── -->
+<div class="preloader" id="preloader">
+  <div class="preloader_slices" id="preloader_slices">
+    <div class="preloader_slice"></div>
+    <div class="preloader_slice"></div>
+    <div class="preloader_slice"></div>
+    <div class="preloader_slice"></div>
+    <div class="preloader_slice"></div>
+  </div>
+  <div class="preloader_ui">
+    <div class="preloader_logo" id="preloader_logo">PropFlow<span>.</span></div>
+    <div class="preloader_bar"><div class="preloader_bar_fill" id="preloader_fill"></div></div>
+    <div class="preloader_pct" id="preloader_pct">0%</div>
+  </div>
+</div>
+
+<!-- ── NAV ───────────────────────────────────────────────────── -->
+<nav class="nav" id="main-nav">
+  <a href="index.html" class="nav_logo">PropFlow<span class="dot">.</span></a>
+  <div class="nav_links">
+    <a href="#features" class="nav_link" data-stagger="nav" data-anim="in">
+      <div class="link_text">Features</div>
+      <div class="link_text">Features</div>
+    </a>
+    <a href="#pricing" class="nav_link" data-stagger="nav" data-anim="in">
+      <div class="link_text">Pricing</div>
+      <div class="link_text">Pricing</div>
+    </a>
+  </div>
+  <div class="nav_cta">
+    <a href="auth/login.html" class="btn-ghost-nav" data-anim="in" data-stagger="nav">Sign in</a>
+    <a href="auth/signup.html" class="btn-primary-nav" data-anim="in" data-stagger="nav">Start free →</a>
+  </div>
+</nav>
+
+<!-- ── HERO ──────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="hero_bg_grid"></div>
+  <div class="hero_glow"></div>
+  <div class="hero_eyebrow" data-anim="in">
+    <div class="hero_eyebrow_dot"></div>
+    AI-Powered · Real Estate Platform
+  </div>
+  <h1 class="hero_h1" data-anim="lines">
+    Close more deals.<br/>Search <em>smarter.</em><br/>Work in one place.
+  </h1>
+  <div class="hero_bottom">
+    <p class="hero_desc" data-anim="lines">
+      Connect your accounts, search with natural language, and manage clients from a single dashboard. No tab-switching. No spreadsheets. No missed leads.
+    </p>
+    <div class="hero_cta_group" data-anim="in">
+      <a href="auth/signup.html" class="btn-hero-primary">Start free — 14 days →</a>
+      <a href="auth/login.html" class="btn-hero-ghost">Sign in</a>
+    </div>
+  </div>
+  <div class="hero_scroll">
+    <div class="hero_scroll_line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- ── MARQUEE TICKER ─────────────────────────────────────────── -->
+<div class="marquee_strip" aria-hidden="true">
+  <div class="marquee_inner">
+    <div class="marquee_set">
+      <span class="mq_brand"><span class="mq_logo" style="background:#006AFF;color:#fff;">Z</span><span class="mq_brand_name">Zillow</span></span>
+      <span class="mq_sep">·</span>
+      <span class="mq_brand"><span class="mq_logo" style="background:#D92228;color:#fff;">R</span><span class="mq_brand_name">Realtor.com</span></span>
+      <span class="mq_sep">·</span>
+      <span class="mq_brand"><span class="mq_logo" style="background:#fff;padding:0;overflow:hidden;"><svg viewBox="0 0 24 24" width="14" height="14"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg></span><span class="mq_brand_name">Google Calendar</span></span>
+      <span class="mq_sep">·</span>
+      <span class="mq_brand"><span class="mq_logo" style="background:#FFD700;color:#333;font-size:9px;">DS</span><span class="mq_brand_name">DocuSign</span></span>
+      <span class="mq_sep">·</span>
+      <span class="mq_brand"><span class="mq_logo" style="background:#7C5CFC;color:#fff;font-size:9px;">DL</span><span class="mq_brand_name">Dotloop</span></span>
+      <span class="mq_sep">·</span>
+      <span class="mq_brand"><span class="mq_logo" style="background:#FF6B35;color:#fff;font-size:8px;">FUB</span><span class="mq_brand_name">Follow Up Boss</span></span>
+      <span class="mq_sep">·</span>
+      <span class="mq_brand"><span class="mq_logo" style="background:#111;color:#9aab9f;font-size:8px;letter-spacing:-.5px;">MLS</span><span class="mq_brand_name">Local MLS</span></span>
+      <span class="mq_sep">·</span>
+      <span class="mq_brand"><span class="mq_logo" style="background:#F22F46;color:#fff;font-size:9px;">TW</span><span class="mq_brand_name">Twilio</span></span>
+      <span class="mq_sep">·</span>
+      <span class="mq_brand"><span class="mq_logo" style="background:#2D6BFF;color:#fff;">A</span><span class="mq_brand_name">ATTOM</span></span>
+      <span class="mq_sep">·</span>
+      <span class="mq_brand"><span class="mq_logo" style="background:#00B4D8;color:#fff;font-size:9px;">kv</span><span class="mq_brand_name">kvCORE</span></span>
+      <span class="mq_sep">·</span>
+      <span class="mq_brand"><span class="mq_logo" style="background:#3D5AFE;color:#fff;font-size:9px;">HB</span><span class="mq_brand_name">Homebot</span></span>
+      <span class="mq_sep">·</span>
+      <span class="mq_brand"><span class="mq_logo" style="background:#059669;color:#fff;font-size:9px;">WA</span><span class="mq_brand_name">Wise Agent</span></span>
+      <span class="mq_sep">·</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── INTRO ──────────────────────────────────────────────────── -->
+<section class="section_intro">
+  <div>
+    <div class="intro_label" data-anim="in">Our approach</div>
+    <h2 class="intro_h2">
+      AI that understands how agents actually work
+    </h2>
+  </div>
+  <div class="intro_right">
+    <p class="intro_p" data-anim="lines">
+      PropFlow isn't a search engine with an AI badge. It understands your clients, your market, and your connected platforms. Describe what you need in plain English and get ranked, scored results with live pricing context — the way you'd ask a brilliant colleague.
+    </p>
+    <p class="intro_p" data-anim="lines">
+      Every detail is built around reducing friction and increasing closings. Less switching between tabs. More time with clients.
+    </p>
+    <a href="auth/signup.html" class="btn-hero-primary" data-anim="in" style="display:inline-flex;">Try it free →</a>
+  </div>
+</section>
+
+<!-- ── HORIZONTAL TITLE SWEEP ────────────────────────────────── -->
+<div class="h_sweep" aria-hidden="true">
+  <div class="h_sweep_track" id="h-sweep">
+    <span>AI Search</span><span class="sweep_sep">·</span>
+    <span>Client CRM</span><span class="sweep_sep">·</span>
+    <span>Calendar Sync</span><span class="sweep_sep">·</span>
+    <span>AI Listings</span><span class="sweep_sep">·</span>
+    <span>Market Data</span><span class="sweep_sep">·</span>
+    <span>AI Search</span><span class="sweep_sep">·</span>
+    <span>Client CRM</span><span class="sweep_sep">·</span>
+    <span>Calendar Sync</span><span class="sweep_sep">·</span>
+    <span>AI Listings</span><span class="sweep_sep">·</span>
+    <span>Market Data</span><span class="sweep_sep">·</span>
+  </div>
+</div>
+
+<!-- ── FEATURES (sticky panel) ───────────────────────────────── -->
+<section class="section_features" id="features">
+  <div class="features_header_row">
+    <h2 class="features_header_h2" data-anim="lines">
+      Everything an agent<br/>needs, in one place
+    </h2>
+    <p class="features_header_sub" data-anim="in">One tool that replaces six. Less switching, more closing.</p>
+  </div>
+
+  <div class="features_track">
+
+    <!-- Sticky left panel -->
+    <div class="features_panel" id="features-panel">
+      <div class="fp_label">What we build</div>
+      <div class="fp_num" id="fp-num">01</div>
+      <h3 class="fp_title" id="fp-title">Natural language AI search</h3>
+      <p class="fp_desc" id="fp-desc">Type how you think — "my client wants 2 beds under $400k near good schools" — and get real, ranked listings with match scores in seconds.</p>
+      <span class="fp_tag" id="fp-tag">Core</span>
+      <div class="fp_progress_wrap">
+        <div class="fp_progress_bar" id="fp-bar"></div>
+      </div>
+    </div>
+
+    <!-- Scrollable feature list -->
+    <ul class="features_list">
+      <li class="feature_item is-active"
+          data-num="01"
+          data-title="Natural language AI search"
+          data-desc="Type how you think — &quot;my client wants 2 beds under $400k near good schools&quot; — and get real, ranked listings with match scores in seconds."
+          data-tag="Core">
+        <span class="feature_num">01</span>
+        <span class="feature_title">Natural language AI search</span>
+        <span class="feature_tag">Core</span>
+      </li>
+      <li class="feature_item"
+          data-num="02"
+          data-title="One-click platform integrations"
+          data-desc="Connect Zillow, Realtor.com, and your local MLS via secure OAuth. No API keys, no tech knowledge required. One button per platform."
+          data-tag="Integrations">
+        <span class="feature_num">02</span>
+        <span class="feature_title">One-click platform integrations</span>
+        <span class="feature_tag">Integrations</span>
+      </li>
+      <li class="feature_item"
+          data-num="03"
+          data-title="Client CRM + real-time alerts"
+          data-desc="Save client preferences, track their full search history, and get notified the moment a matching property hits the market."
+          data-tag="CRM">
+        <span class="feature_num">03</span>
+        <span class="feature_title">Client CRM + real-time alerts</span>
+        <span class="feature_tag">CRM</span>
+      </li>
+      <li class="feature_item"
+          data-num="04"
+          data-title="Google Calendar two-way sync"
+          data-desc="Schedule showings directly from the dashboard. Events sync instantly — PropFlow reads your calendar so it never double-books you."
+          data-tag="Scheduling">
+        <span class="feature_num">04</span>
+        <span class="feature_title">Google Calendar two-way sync</span>
+        <span class="feature_tag">Scheduling</span>
+      </li>
+      <li class="feature_item"
+          data-num="05"
+          data-title="AI listing writer"
+          data-desc="Describe the property, set the tone. Claude writes compelling MLS descriptions, social posts, and email copy in one click."
+          data-tag="AI">
+        <span class="feature_num">05</span>
+        <span class="feature_title">AI listing writer</span>
+        <span class="feature_tag">AI</span>
+      </li>
+      <li class="feature_item"
+          data-num="06"
+          data-title="Live market intelligence"
+          data-desc="Median prices, days on market, comparable sales — pulled live for any area. AI match scoring gives every result a PropFlow score out of 100."
+          data-tag="Data">
+        <span class="feature_num">06</span>
+        <span class="feature_title">Live market intelligence</span>
+        <span class="feature_tag">Data</span>
+      </li>
+    </ul>
+
+  </div>
+</section>
+
+<!-- ── AI DEMO ────────────────────────────────────────────────── -->
+<section class="section_demo">
+  <div>
+    <div class="demo_label" data-anim="in">AI in action</div>
+    <h2 class="demo_h2" data-anim="lines">
+      Talk to PropFlow<br/><em>like a colleague</em>
+    </h2>
+    <p class="demo_p" data-anim="in">
+      The AI knows your client, your market, and your connected platforms. Just describe what you need. PropFlow returns ranked results with match scores, pricing context, and school data.
+    </p>
+    <a href="auth/signup.html" class="btn-hero-primary" data-anim="in" style="display:inline-flex;">Try it free →</a>
+  </div>
+  <div class="demo_terminal" data-anim="in">
+    <div class="terminal_bar">
+      <div class="tdot" style="background:#f87171;"></div>
+      <div class="tdot" style="background:#fbbf24;"></div>
+      <div class="tdot" style="background:var(--accent);"></div>
+      <span style="margin-left:.6rem;">propflow — ai search</span>
+    </div>
+    <div class="terminal_body">
+      <div class="t_label">Agent prompt</div>
+      <div class="t_prompt">"My client Sarah wants 2 bed 2 bath under $350k, open to renting first, needs to be near a good school district"</div>
+      <div class="t_label" style="margin-bottom:.7rem;">Top matches · PropFlow score</div>
+      <div class="t_result">
+        <div class="t_rank gold">1</div>
+        <div style="flex:1;">
+          <div class="t_addr">88 Oak Avenue, Madison WI</div>
+          <div class="t_detail">2bd · 2ba · $329k · School 9/10 · For sale</div>
+        </div>
+        <div class="t_score">96/100</div>
+      </div>
+      <div class="t_result">
+        <div class="t_rank">2</div>
+        <div style="flex:1;">
+          <div class="t_addr">210 Birchwood Lane</div>
+          <div class="t_detail">2bd · 2ba · $344.5k · School 8/10 · For sale</div>
+        </div>
+        <div class="t_score">91/100</div>
+      </div>
+      <div class="t_result">
+        <div class="t_rank">3</div>
+        <div style="flex:1;">
+          <div class="t_addr">412 Maple St, Unit 3B</div>
+          <div class="t_detail">2bd · 2ba · $1,850/mo · School 8/10 · Rental</div>
+        </div>
+        <div class="t_score">88/100</div>
+      </div>
+      <div class="t_footer">Market context: Median 2bd sale $412k · Median rental $1,890/mo in this area</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PRICING ────────────────────────────────────────────────── -->
+<section class="section_pricing" id="pricing">
+  <div class="pricing_header">
+    <div class="pricing_label" data-anim="in">Pricing</div>
+    <h2 class="pricing_h2" data-anim="lines">Simple,<br/>transparent pricing</h2>
+  </div>
+  <div class="pricing_grid">
+    <div class="plan_card">
+      <div class="plan_name">Starter</div>
+      <div class="plan_price"><sup>$</sup>49<sub>/mo</sub></div>
+      <div class="plan_desc">For individual agents just getting started with AI-powered tools.</div>
+      <ul class="plan_features">
+        <li>AI property search</li>
+        <li>Up to 25 active clients</li>
+        <li>2 platform integrations</li>
+        <li>Google Calendar sync</li>
+        <li>AI match scoring</li>
+      </ul>
+      <a href="auth/signup.html" class="btn_plan_ghost">Get started →</a>
+    </div>
+    <div class="plan_card featured">
+      <div class="plan_featured_badge">Most popular</div>
+      <div class="plan_name">Pro</div>
+      <div class="plan_price"><sup>$</sup>99<sub>/mo</sub></div>
+      <div class="plan_desc">For active agents who need the full platform without limits.</div>
+      <ul class="plan_features">
+        <li>Everything in Starter</li>
+        <li>Unlimited clients</li>
+        <li>All platform integrations</li>
+        <li>AI listing writer</li>
+        <li>Market intelligence reports</li>
+        <li>Priority support</li>
+      </ul>
+      <a href="auth/signup.html" class="btn_plan_primary">Start free trial →</a>
+    </div>
+    <div class="plan_card">
+      <div class="plan_name">Team</div>
+      <div class="plan_price"><sup>$</sup>249<sub>/mo</sub></div>
+      <div class="plan_desc">For brokerages and team leaders managing multiple agents.</div>
+      <ul class="plan_features">
+        <li>Everything in Pro</li>
+        <li>Up to 10 agents</li>
+        <li>Team performance dashboard</li>
+        <li>Listing approval workflow</li>
+        <li>Custom branding</li>
+        <li>Dedicated support</li>
+      </ul>
+      <a href="auth/signup.html" class="btn_plan_ghost">Get started →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA ────────────────────────────────────────────────────── -->
+<section class="section_cta">
+  <div class="cta_glow"></div>
+  <h2 class="cta_h2" data-anim="lines">
+    Ready to close<br/><em>more deals?</em>
+  </h2>
+  <p class="cta_p" data-anim="in">Set up in under 5 minutes. No credit card required for the first 14 days.</p>
+  <div class="cta_buttons" data-anim="in">
+    <a href="auth/signup.html" class="btn-hero-primary">Get started free →</a>
+    <a href="#features" class="btn-hero-ghost">See all features</a>
+  </div>
+</section>
+
+<!-- ── FOOTER ─────────────────────────────────────────────────── -->
+<footer class="footer">
+  <div>
+    <div class="footer_logo">PropFlow<span class="dot">.</span></div>
+    <div class="footer_tagline">The AI platform built for real estate agents. One dashboard. No tab-switching.</div>
+  </div>
+  <div class="footer_links">
+    <div class="footer_col">
+      <div class="footer_col_title">Product</div>
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+    </div>
+    <div class="footer_col">
+      <div class="footer_col_title">Account</div>
+      <a href="auth/signup.html">Sign up</a>
+      <a href="auth/login.html">Sign in</a>
+      <a href="dashboard/billing.html">Billing</a>
+    </div>
+    <div class="footer_col">
+      <div class="footer_col_title">Legal</div>
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+      <a href="#">Security</a>
+      <a href="#">Status</a>
+    </div>
+  </div>
+</footer>
+<div class="footer_bottom">
+  <span>© 2026 PropFlow Inc. All rights reserved.</span>
+  <span>Built for agents, by agents.</span>
+</div>
+
+<!-- ── SCRIPTS ────────────────────────────────────────────────── -->
+<script src="https://unpkg.com/lenis@1.1.16/dist/lenis.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/split-type@0.3.4"></script>
+<script>gsap.registerPlugin(ScrollTrigger);</script>
+<script src="js/landing-animations.js"></script>
+</body>
+</html>

@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Billing & Plan — PropFlow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="../css/main.css"/>
+<style>
+  .plan-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:32px; }
+  .plan-card { background:var(--bg); border:1px solid var(--border); border-radius:var(--radius-md); padding:28px 24px; position:relative; }
+  .plan-card.current { border-color:var(--accent); box-shadow:0 0 0 1px var(--accent); }
+  .plan-card.popular { border-color:rgba(74,222,128,.4); }
+  .plan-popular-badge { position:absolute; top:-11px; left:50%; transform:translateX(-50%); background:var(--accent); color:#0b0f0e; font-size:10px; font-weight:700; letter-spacing:.08em; padding:3px 10px; border-radius:20px; white-space:nowrap; }
+  .plan-name { font-size:13px; font-weight:600; color:var(--text3); text-transform:uppercase; letter-spacing:.08em; margin-bottom:6px; }
+  .plan-price { font-size:32px; font-weight:700; color:var(--text); font-family:'DM Mono',monospace; margin-bottom:4px; }
+  .plan-price span { font-size:14px; font-weight:400; color:var(--text3); }
+  .plan-desc { font-size:13px; color:var(--text3); margin-bottom:20px; }
+  .plan-features { list-style:none; padding:0; margin:0 0 24px; display:flex; flex-direction:column; gap:8px; }
+  .plan-features li { font-size:13px; color:var(--text2); display:flex; align-items:center; gap:8px; }
+  .plan-features li::before { content:'✓'; color:var(--accent); font-weight:700; flex-shrink:0; }
+  .plan-features li.off { color:var(--text3); }
+  .plan-features li.off::before { content:'—'; color:var(--text3); }
+  .plan-current-badge { display:inline-flex; align-items:center; gap:5px; font-size:11px; color:var(--accent); background:var(--accent-dim); border:1px solid rgba(74,222,128,.3); border-radius:20px; padding:3px 10px; margin-bottom:12px; }
+  .invoice-row { display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid var(--border); }
+  .invoice-date { font-size:12px; color:var(--text3); font-family:'DM Mono',monospace; width:90px; flex-shrink:0; }
+  .invoice-desc { font-size:13px; color:var(--text2); flex:1; }
+  .invoice-amount { font-size:13px; font-weight:600; color:var(--text); font-family:'DM Mono',monospace; width:70px; text-align:right; }
+  .invoice-status { font-size:10px; padding:2px 8px; border-radius:10px; flex-shrink:0; }
+  .invoice-status.paid { background:var(--accent-dim); color:var(--accent); }
+  .invoice-status.failed { background:rgba(248,113,113,.1); color:var(--red); }
+  .section-title { font-size:16px; font-weight:600; color:var(--text); margin-bottom:14px; }
+  @media(max-width:900px) { .plan-grid { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo">PropFlow<span class="dot">.</span></a>
+  <div class="nav-links"><a href="search.html">AI Search</a><a href="listings.html">Listings</a><a href="clients.html">Clients</a></div>
+  <div style="display:flex;align-items:center;gap:14px;">
+    <div class="nav-avatar nav-avatar" onclick="openModal('user-menu-modal')">J</div>
+  </div>
+</nav>
+
+<div class="dash-layout">
+  <div class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Main</div>
+      <a href="index.html" class="sidebar-item"><span class="si-icon">⊞</span> Dashboard</a>
+      <a href="search.html" class="sidebar-item"><span class="si-icon">✦</span> AI Search</a>
+      <a href="listings.html" class="sidebar-item"><span class="si-icon">📋</span> My Listings</a>
+      <a href="clients.html" class="sidebar-item"><span class="si-icon">👥</span> Clients</a>
+      <a href="chat.html" class="sidebar-item"><span class="si-icon">💬</span> Messages</a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Tools</div>
+      <a href="schedule.html" class="sidebar-item"><span class="si-icon">📅</span> Schedule</a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Account</div>
+      <a href="integrations.html" class="sidebar-item"><span class="si-icon">🔗</span> Integrations</a>
+      <a href="team.html" class="sidebar-item leader-only"><span class="si-icon">🏢</span> Team</a>
+      <a href="billing.html" class="sidebar-item active"><span class="si-icon">💳</span> Billing</a>
+      <a href="settings.html" class="sidebar-item"><span class="si-icon">⚙️</span> Settings</a>
+    </div>
+    <div class="sidebar-user">
+      <div class="sidebar-user-inner" onclick="openModal('user-menu-modal')">
+        <div class="s-avatar">J</div>
+        <div><div class="s-name">Jordan Mitchell</div><div class="s-role">Agent</div></div>
+        <div class="s-arrow">›</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dash-main">
+    <div class="dash-ph">
+      <div class="dash-ph-left">
+        <div class="eyebrow">Account</div>
+        <div class="page-title">Billing &amp; Plan</div>
+      </div>
+      <div class="dash-ph-right" id="current-plan-badge" style="display:none;">
+        <div class="plan-current-badge">
+          <span>●</span>
+          <span id="current-plan-label">Pro · Active</span>
+        </div>
+        <button class="btn btn-ghost btn-sm" id="manage-btn" onclick="openPortal()">
+          Manage subscription →
+        </button>
+      </div>
+    </div>
+
+    <!-- Banner messages -->
+    <div id="success-banner" style="display:none; padding:14px 18px; background:var(--accent-dim); border:1px solid rgba(74,222,128,.3); border-radius:var(--radius); margin-bottom:20px; font-size:13px; color:var(--accent);"></div>
+    <div id="error-banner" style="display:none; padding:14px 18px; background:rgba(248,113,113,.1); border:1px solid rgba(248,113,113,.25); border-radius:var(--radius); margin-bottom:20px; font-size:13px; color:var(--red);"></div>
+
+    <!-- Trial notice -->
+    <div id="trial-notice" style="display:none; padding:14px 18px; background:rgba(251,191,36,.08); border:1px solid rgba(251,191,36,.25); border-radius:var(--radius); margin-bottom:24px;">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+        <div>
+          <div style="font-size:14px; font-weight:600; color:var(--gold); margin-bottom:3px;">
+            ⏱ Free trial — <span id="trial-days-left">14</span> days remaining
+          </div>
+          <div style="font-size:12px; color:var(--text3);">Subscribe now to lock in your rate. No charge until trial ends.</div>
+        </div>
+        <a href="#plans" class="btn btn-primary btn-sm">Choose a plan →</a>
+      </div>
+    </div>
+
+    <!-- Plans -->
+    <div id="plans" style="scroll-margin-top:20px;">
+      <div class="section-title">Choose your plan</div>
+      <div class="plan-grid">
+
+        <!-- Starter -->
+        <div class="plan-card" id="card-starter">
+          <div class="plan-name">Starter</div>
+          <div class="plan-price">$49<span>/mo</span></div>
+          <div class="plan-desc">Perfect for individual agents getting started</div>
+          <ul class="plan-features">
+            <li>Up to 25 active listings</li>
+            <li>AI property search (100/mo)</li>
+            <li>CRM up to 50 clients</li>
+            <li>Zillow &amp; Realtor.com sync</li>
+            <li>AI listing writer</li>
+            <li>Market insights</li>
+            <li class="off">Team features</li>
+            <li class="off">Priority support</li>
+          </ul>
+          <button class="btn btn-ghost btn-full" id="btn-starter" onclick="choosePlan('starter')">
+            Get started
+          </button>
+        </div>
+
+        <!-- Pro (most popular) -->
+        <div class="plan-card popular" id="card-pro">
+          <div class="plan-popular-badge">Most popular</div>
+          <div class="plan-name">Pro</div>
+          <div class="plan-price">$99<span>/mo</span></div>
+          <div class="plan-desc">For serious agents who want the full toolkit</div>
+          <ul class="plan-features">
+            <li>Unlimited active listings</li>
+            <li>AI property search (unlimited)</li>
+            <li>Unlimited CRM clients</li>
+            <li>Zillow, Realtor.com &amp; MLS sync</li>
+            <li>AI listing writer (unlimited)</li>
+            <li>Market insights + reports</li>
+            <li>Google Calendar integration</li>
+            <li>Priority support</li>
+          </ul>
+          <button class="btn btn-primary btn-full" id="btn-pro" onclick="choosePlan('pro')">
+            Get Pro →
+          </button>
+        </div>
+
+        <!-- Team -->
+        <div class="plan-card" id="card-team">
+          <div class="plan-name">Team</div>
+          <div class="plan-price">$249<span>/mo</span></div>
+          <div class="plan-desc">For team leaders managing up to 10 agents</div>
+          <ul class="plan-features">
+            <li>Everything in Pro</li>
+            <li>Up to 10 agent seats</li>
+            <li>Team leader dashboard</li>
+            <li>Listing approval workflow</li>
+            <li>Agent performance reports</li>
+            <li>Shared client pipeline</li>
+            <li>Team lead routing</li>
+            <li>Dedicated support</li>
+          </ul>
+          <button class="btn btn-ghost btn-full" id="btn-team" onclick="choosePlan('team')">
+            Get Team →
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Invoice history -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Payment history</span>
+        <a id="download-all-btn" href="#" style="display:none;" class="card-action">Download all</a>
+      </div>
+      <div class="card-body" id="invoice-list">
+        <div style="font-size:13px; color:var(--text3); padding:8px 0;">
+          No payment history yet. Invoices will appear here after your first charge.
+        </div>
+      </div>
+    </div>
+
+    <!-- FAQ -->
+    <div class="card">
+      <div class="card-header"><span class="card-title">Billing FAQ</span></div>
+      <div class="card-body" style="padding:16px;">
+        <details style="margin-bottom:14px;">
+          <summary style="font-size:14px; color:var(--text); cursor:pointer; font-weight:500; padding:4px 0;">
+            When does my trial end?
+          </summary>
+          <p style="font-size:13px; color:var(--text3); margin-top:8px; line-height:1.6;">
+            Your 14-day free trial starts when you create your account. You will not be charged until the trial ends. You can cancel anytime before the trial ends with no charge.
+          </p>
+        </details>
+        <details style="margin-bottom:14px;">
+          <summary style="font-size:14px; color:var(--text); cursor:pointer; font-weight:500; padding:4px 0;">
+            Can I switch plans?
+          </summary>
+          <p style="font-size:13px; color:var(--text3); margin-top:8px; line-height:1.6;">
+            Yes! You can upgrade or downgrade at any time. Upgrades take effect immediately. Downgrades take effect at the next billing cycle.
+          </p>
+        </details>
+        <details style="margin-bottom:14px;">
+          <summary style="font-size:14px; color:var(--text); cursor:pointer; font-weight:500; padding:4px 0;">
+            What payment methods do you accept?
+          </summary>
+          <p style="font-size:13px; color:var(--text3); margin-top:8px; line-height:1.6;">
+            We accept all major credit and debit cards (Visa, Mastercard, Amex, Discover) via Stripe. All payments are securely processed — PropFlow never stores your card details.
+          </p>
+        </details>
+        <details>
+          <summary style="font-size:14px; color:var(--text); cursor:pointer; font-weight:500; padding:4px 0;">
+            How do I cancel?
+          </summary>
+          <p style="font-size:13px; color:var(--text3); margin-top:8px; line-height:1.6;">
+            Click "Manage subscription" above to access the Stripe billing portal where you can cancel at any time. You'll retain access until the end of your current billing period.
+          </p>
+        </details>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- User Menu Modal -->
+<div class="modal-overlay" id="user-menu-modal">
+  <div class="modal" style="max-width:280px;">
+    <div class="modal-body" style="padding:16px;">
+      <div style="display:flex;align-items:center;gap:12px;padding-bottom:14px;border-bottom:1px solid var(--border);margin-bottom:12px;">
+        <div class="s-avatar" style="width:40px;height:40px;font-size:16px;">J</div>
+        <div>
+          <div class="s-name" style="font-size:14px;">Jordan Mitchell</div>
+          <div class="s-role">Agent · Pro plan</div>
+        </div>
+      </div>
+      <a href="settings.html" class="sidebar-item" style="text-decoration:none;">⚙️ &nbsp;Account settings</a>
+      <a href="billing.html" class="sidebar-item" style="text-decoration:none;">💳 &nbsp;Billing &amp; plan</a>
+      <div class="divider"></div>
+      <div class="sidebar-item" data-action="signout" style="color:var(--red);">↪ &nbsp;Sign out</div>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../config.js"></script>
+<script src="../js/supabase-client.js"></script>
+<script src="../js/auth-guard.js"></script>
+<script src="../js/app.js"></script>
+<script>
+// Check URL params
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('success')) {
+    const plan = params.get('plan') || 'Pro';
+    document.getElementById('success-banner').textContent =
+      `✓ Welcome to PropFlow ${plan.charAt(0).toUpperCase() + plan.slice(1)}! Your subscription is now active.`;
+    document.getElementById('success-banner').style.display = 'block';
+    history.replaceState({}, '', window.location.pathname);
+  }
+  if (params.get('canceled')) {
+    document.getElementById('error-banner').textContent =
+      'Checkout was canceled. No charge was made. Choose a plan below to continue.';
+    document.getElementById('error-banner').style.display = 'block';
+    history.replaceState({}, '', window.location.pathname);
+  }
+})();
+
+// ── Load current subscription ──────────────────────────────────────────────
+(async function loadBillingState() {
+  const sb = window.supabaseClient;
+  if (!sb) { showDemoState(); return; }
+
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) return;
+
+  const { data: profile } = await sb
+    .from('profiles')
+    .select('subscription_status, subscription_plan, trial_ends_at, full_name')
+    .eq('id', session.user.id)
+    .single();
+
+  if (!profile) { showDemoState(); return; }
+
+  const plan   = profile.subscription_plan || 'starter';
+  const status = profile.subscription_status || 'trial';
+
+  // Show trial notice
+  if (status === 'trial' || status === 'trialing') {
+    const trialEnd  = new Date(profile.trial_ends_at);
+    const daysLeft  = Math.max(0, Math.ceil((trialEnd - Date.now()) / 86400000));
+    document.getElementById('trial-days-left').textContent = daysLeft;
+    document.getElementById('trial-notice').style.display = 'block';
+  }
+
+  // Mark current plan card
+  markCurrentPlan(plan, status);
+
+  // Show manage button
+  if (status === 'active' || status === 'past_due') {
+    document.getElementById('current-plan-badge').style.display = 'flex';
+    document.getElementById('current-plan-label').textContent =
+      `${plan.charAt(0).toUpperCase() + plan.slice(1)} · ${status === 'active' ? 'Active' : 'Past due'}`;
+  }
+
+  // Load invoices
+  await loadInvoices(session, sb);
+})();
+
+function markCurrentPlan(plan, status) {
+  const active = status === 'active' || status === 'trialing' || status === 'trial';
+  ['starter', 'pro', 'team'].forEach(p => {
+    const card = document.getElementById('card-' + p);
+    const btn  = document.getElementById('btn-' + p);
+    if (p === plan && active) {
+      card.classList.add('current');
+      btn.innerHTML  = '<span class="plan-current-badge" style="margin:0; border:none; justify-content:center; width:100%;">✓ Current plan</span>';
+      btn.disabled   = true;
+      btn.style.cursor = 'default';
+    }
+  });
+}
+
+async function loadInvoices(session, sb) {
+  // In production, fetch from Stripe via Edge Function
+  // For now, show placeholder
+  const container = document.getElementById('invoice-list');
+  const demoInvoices = [
+    { date: 'Apr 1, 2026', desc: 'PropFlow Pro · Monthly', amount: '$99.00', status: 'paid' },
+    { date: 'Mar 1, 2026', desc: 'PropFlow Pro · Monthly', amount: '$99.00', status: 'paid' },
+    { date: 'Feb 1, 2026', desc: 'PropFlow Pro · Monthly', amount: '$99.00', status: 'paid' },
+  ];
+
+  if (!demoInvoices.length) return;
+
+  document.getElementById('download-all-btn').style.display = 'block';
+  container.innerHTML = demoInvoices.map(inv => `
+    <div class="invoice-row">
+      <div class="invoice-date">${inv.date}</div>
+      <div class="invoice-desc">${inv.desc}</div>
+      <div class="invoice-amount">${inv.amount}</div>
+      <div class="invoice-status ${inv.status}">${inv.status}</div>
+      <button class="btn btn-ghost btn-sm" style="padding:3px 10px; font-size:11px;" onclick="downloadInvoice()">PDF</button>
+    </div>`).join('');
+}
+
+function showDemoState() {
+  // Demo: show Pro as active
+  markCurrentPlan('pro', 'active');
+  document.getElementById('current-plan-badge').style.display = 'flex';
+  document.getElementById('current-plan-label').textContent = 'Pro · Demo mode';
+}
+
+// ── Actions ────────────────────────────────────────────────────────────────
+async function choosePlan(plan) {
+  const sb  = window.supabaseClient;
+  const btn = document.getElementById('btn-' + plan);
+  setLoading(btn, true);
+
+  if (!sb) {
+    // No Supabase — link to a mailto or just show info
+    setLoading(btn, false);
+    toast('To subscribe, complete your PropFlow setup first. See SETUP.md.', 'info', 5000);
+    return;
+  }
+
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) throw new Error('Please sign in');
+
+    const { data, error } = await sb.functions.invoke('stripe-checkout', {
+      body: { plan, action: 'create_checkout' },
+    });
+
+    if (error || !data?.url) throw new Error(error?.message || 'Could not create checkout session');
+
+    window.location.href = data.url;
+  } catch (err) {
+    setLoading(btn, false);
+    document.getElementById('error-banner').textContent = err.message;
+    document.getElementById('error-banner').style.display = 'block';
+  }
+}
+
+async function openPortal() {
+  const sb  = window.supabaseClient;
+  const btn = document.getElementById('manage-btn');
+  setLoading(btn, true);
+
+  if (!sb) { setLoading(btn, false); toast('Demo mode — billing portal not available.', 'info'); return; }
+
+  try {
+    const { data, error } = await sb.functions.invoke('stripe-checkout', {
+      body: { action: 'create_portal' },
+    });
+    if (error || !data?.url) throw new Error('Could not open billing portal');
+    window.location.href = data.url;
+  } catch (err) {
+    setLoading(btn, false, 'Manage subscription →');
+    toast(err.message, 'error');
+  }
+}
+
+function downloadInvoice() {
+  toast('Invoice download coming soon. Contact support for now.', 'info');
+}
+</script>
+</body>
+</html>
