@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>New Listing — PropFlow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="../css/main.css"/>
+</head>
+<body>
+<nav class="nav">
+  <a href="../index.html" class="nav-logo">PropFlow<span class="dot">.</span></a>
+  <div class="nav-links"><a href="index.html">Dashboard</a><a href="listings.html">Listings</a></div>
+  <div style="display:flex;align-items:center;gap:14px;"><div class="nav-avatar">J</div></div>
+</nav>
+<div class="dash-layout">
+  <div class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Main</div>
+      <a href="index.html" class="sidebar-item"><span class="si-icon">⊞</span> Dashboard</a>
+      <a href="search.html" class="sidebar-item"><span class="si-icon">✦</span> AI Search</a>
+      <a href="listings.html" class="sidebar-item active"><span class="si-icon">📋</span> My Listings</a>
+      <a href="clients.html" class="sidebar-item"><span class="si-icon">👥</span> Clients</a>
+      <a href="chat.html" class="sidebar-item"><span class="si-icon">💬</span> Messages</a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Tools</div>
+      <a href="market.html" class="sidebar-item"><span class="si-icon">📊</span> Market Insights</a>
+      <a href="schedule.html" class="sidebar-item"><span class="si-icon">📅</span> Schedule</a>
+      <a href="ai-writer.html" class="sidebar-item"><span class="si-icon">✏️</span> AI Listing Writer</a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Account</div>
+      <a href="integrations.html" class="sidebar-item"><span class="si-icon">🔗</span> Integrations</a>
+      <a href="team.html" class="sidebar-item leader-only"><span class="si-icon">🏢</span> Team</a>
+      <a href="billing.html" class="sidebar-item"><span class="si-icon">💳</span> Billing</a>
+      <a href="settings.html" class="sidebar-item"><span class="si-icon">⚙️</span> Settings</a>
+    </div>
+    <div class="sidebar-user">
+      <div class="sidebar-user-inner">
+        <div class="s-avatar">J</div>
+        <div><div class="s-name">Jordan Mitchell</div><div class="s-role">Agent</div></div>
+        <div class="s-arrow">›</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dash-main" style="max-width:860px;">
+    <div class="dash-ph">
+      <div class="dash-ph-left">
+        <div><a href="listings.html" style="font-size:12px;color:var(--text3);">← Back to listings</a></div>
+        <div class="page-title" style="margin-top:4px;">Create New Listing</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 280px;gap:20px;">
+      <!-- Form -->
+      <div>
+        <form id="listing-form">
+
+          <!-- Property details -->
+          <div class="card mb-4">
+            <div class="card-header"><span class="card-title">Property details</span></div>
+            <div class="card-body">
+              <div class="form-row">
+                <div class="form-group"><label>Street address *</label><input type="text" id="f-addr" placeholder="124 Elm Street" required/></div>
+                <div class="form-group"><label>Unit / Apt</label><input type="text" id="f-unit" placeholder="Unit 3B"/></div>
+              </div>
+              <div class="form-row">
+                <div class="form-group"><label>City *</label><input type="text" id="f-city" placeholder="Madison" required/></div>
+                <div class="form-group"><label>State *</label><input type="text" id="f-state" placeholder="WI" required/></div>
+              </div>
+              <div class="form-row">
+                <div class="form-group"><label>ZIP code</label><input type="text" id="f-zip" placeholder="53701"/></div>
+                <div class="form-group"><label>Listing type *</label>
+                  <select id="f-type" required>
+                    <option value="sale">For Sale</option>
+                    <option value="rent">For Rent</option>
+                    <option value="both">For Sale or Rent</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group"><label>Asking price *</label><input type="number" id="f-price" placeholder="329000" required/></div>
+                <div class="form-group"><label>HOA fees / mo</label><input type="number" id="f-hoa" placeholder="0"/></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Property specs -->
+          <div class="card mb-4">
+            <div class="card-header"><span class="card-title">Property specs</span></div>
+            <div class="card-body">
+              <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;">
+                <div class="form-group"><label>Bedrooms</label><input type="number" id="f-beds" placeholder="2" min="0"/></div>
+                <div class="form-group"><label>Bathrooms</label><input type="number" id="f-baths" placeholder="2" min="0" step="0.5"/></div>
+                <div class="form-group"><label>Sqft</label><input type="number" id="f-sqft" placeholder="1240"/></div>
+                <div class="form-group"><label>Year built</label><input type="number" id="f-year" placeholder="2003"/></div>
+              </div>
+              <div class="form-row">
+                <div class="form-group"><label>Property type</label>
+                  <select id="f-proptype">
+                    <option value="single">Single family</option>
+                    <option value="condo">Condo / Townhouse</option>
+                    <option value="multi">Multi-family</option>
+                    <option value="land">Land</option>
+                    <option value="commercial">Commercial</option>
+                  </select>
+                </div>
+                <div class="form-group"><label>Lot size (sqft)</label><input type="number" id="f-lot" placeholder="6500"/></div>
+              </div>
+              <div class="form-group"><label>Features (check all that apply)</label>
+                <div style="display:flex;gap:10px;flex-wrap:wrap;padding:10px;background:var(--bg3);border-radius:var(--radius-sm);">
+                  <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;"><input type="checkbox" style="width:auto;accent-color:var(--accent);"/> Garage</label>
+                  <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;"><input type="checkbox" style="width:auto;accent-color:var(--accent);"/> Pool</label>
+                  <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;"><input type="checkbox" style="width:auto;accent-color:var(--accent);"/> Fireplace</label>
+                  <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;"><input type="checkbox" style="width:auto;accent-color:var(--accent);"/> A/C</label>
+                  <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;"><input type="checkbox" style="width:auto;accent-color:var(--accent);"/> New kitchen</label>
+                  <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;"><input type="checkbox" style="width:auto;accent-color:var(--accent);"/> Hardwood floors</label>
+                  <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;"><input type="checkbox" style="width:auto;accent-color:var(--accent);"/> Pet friendly</label>
+                  <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;"><input type="checkbox" style="width:auto;accent-color:var(--accent);"/> Washer/Dryer</label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div class="card mb-4">
+            <div class="card-header">
+              <span class="card-title">Listing description</span>
+              <button type="button" class="btn btn-primary btn-sm" onclick="generateDescription()">✦ AI Generate</button>
+            </div>
+            <div class="card-body">
+              <textarea id="f-desc" rows="6" placeholder="Describe the property — or click 'AI Generate' to have PropFlow write it for you based on the details above…"></textarea>
+              <div style="font-size:11px;color:var(--text3);margin-top:6px;" id="char-count">0 characters</div>
+            </div>
+          </div>
+
+          <!-- Photos -->
+          <div class="card mb-4">
+            <div class="card-header"><span class="card-title">Photos</span></div>
+            <div class="card-body">
+              <div id="photo-drop" style="border:2px dashed var(--border2);border-radius:var(--radius);padding:40px;text-align:center;cursor:pointer;transition:border-color .2s;" onclick="document.getElementById('photo-input').click()" ondragover="event.preventDefault();this.style.borderColor='var(--accent)'" ondragleave="this.style.borderColor=''" ondrop="handleDrop(event)">
+                <div style="font-size:32px;margin-bottom:8px;">🖼</div>
+                <div style="font-size:14px;color:var(--text2);">Click or drag photos here</div>
+                <div style="font-size:12px;color:var(--text3);margin-top:4px;">JPG, PNG, WEBP · Max 10MB each · Up to 25 photos</div>
+              </div>
+              <input type="file" id="photo-input" multiple accept="image/*" style="display:none;" onchange="handlePhotos(event)"/>
+              <div id="photo-preview" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;"></div>
+            </div>
+          </div>
+
+        </form>
+      </div>
+
+      <!-- Right sidebar -->
+      <div style="display:flex;flex-direction:column;gap:14px;">
+
+        <!-- Publish to platforms -->
+        <div class="card">
+          <div class="card-header"><span class="card-title">Publish to platforms</span></div>
+          <div class="card-body">
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:10px;background:var(--bg3);border-radius:var(--radius-sm);border:1px solid var(--border);">
+                <input type="checkbox" id="pub-zillow" style="width:auto;accent-color:var(--accent);"/>
+                <div><div style="font-size:13px;font-weight:500;">🏡 Zillow</div><div style="font-size:11px;color:var(--text3);">Requires Zillow connection</div></div>
+              </label>
+              <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:10px;background:var(--bg3);border-radius:var(--radius-sm);border:1px solid var(--border);">
+                <input type="checkbox" id="pub-realtor" style="width:auto;accent-color:var(--accent);"/>
+                <div><div style="font-size:13px;font-weight:500;">🏘 Realtor.com</div><div style="font-size:11px;color:var(--text3);">Requires Realtor.com connection</div></div>
+              </label>
+              <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:10px;background:var(--bg3);border-radius:var(--radius-sm);border:1px solid var(--border);">
+                <input type="checkbox" id="pub-mls" style="width:auto;accent-color:var(--accent);"/>
+                <div><div style="font-size:13px;font-weight:500;">🗂 Local MLS</div><div style="font-size:11px;color:var(--text3);">Requires MLS connection</div></div>
+              </label>
+            </div>
+            <div style="padding:10px;background:var(--accent-dim2);border:1px solid rgba(74,222,128,.15);border-radius:var(--radius-sm);margin-top:12px;font-size:12px;color:var(--text3);">
+              ✦ PropFlow will sync this listing automatically whenever you update it.
+            </div>
+          </div>
+        </div>
+
+        <!-- Team approval notice -->
+        <div class="card leader-only" style="display:none;">
+          <div class="card-header"><span class="card-title">Team approval</span></div>
+          <div class="card-body">
+            <div style="font-size:13px;color:var(--text2);">As team leader, your listings publish immediately. Agent listings require your approval first.</div>
+          </div>
+        </div>
+
+        <!-- CMA / Pricing intel -->
+        <div class="card">
+          <div class="card-header"><span class="card-title">Pricing intelligence</span></div>
+          <div class="card-body">
+            <div id="pricing-intel" style="font-size:13px;color:var(--text3);">Enter address to get pricing suggestions</div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <button class="btn btn-primary btn-full btn-lg" onclick="submitListing('active')" id="publish-btn">Publish Listing →</button>
+          <button class="btn btn-ghost btn-full" onclick="submitListing('draft')">Save as draft</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../config.js"></script>
+<script src="../js/supabase-client.js"></script>
+<script src="../js/auth-guard.js"></script>
+<script src="../js/app.js"></script>
+<script>
+document.getElementById('f-desc').addEventListener('input', function() {
+  document.getElementById('char-count').textContent = this.value.length + ' characters';
+});
+
+// Pre-fill from AI prompt if passed
+const params = new URLSearchParams(window.location.search);
+if (params.get('prompt')) {
+  const p = params.get('prompt');
+  if (/(\d+\s+\w+\s+(street|st|ave|avenue|blvd|dr|drive|lane|ln))/i.test(p)) {
+    document.getElementById('f-addr').value = p.match(/(\d+\s+\w+\s+(street|st|ave|avenue|blvd|dr|drive|lane|ln))/i)[0];
+  }
+}
+
+async function generateDescription() {
+  const addr = document.getElementById('f-addr').value;
+  const city = document.getElementById('f-city').value;
+  const beds = document.getElementById('f-beds').value;
+  const baths = document.getElementById('f-baths').value;
+  const sqft = document.getElementById('f-sqft').value;
+  const price = document.getElementById('f-price').value;
+  const type = document.getElementById('f-type').value;
+
+  if (!addr) { toast('Enter the address first.', 'warning'); return; }
+
+  const btn = document.querySelector('[onclick="generateDescription()"]');
+  setLoading(btn, true);
+
+  // Simulate AI response
+  await new Promise(r => setTimeout(r, 2000));
+
+  const desc = `Welcome to this stunning ${beds||2}-bedroom, ${baths||2}-bathroom ${type==='rent'?'rental':'home'} located at ${addr}, ${city||'Madison, WI'}. ${sqft ? 'With ' + parseInt(sqft).toLocaleString() + ' square feet of living space, ' : ''}this property offers an exceptional blend of comfort, style, and location.\n\nThe open-concept main floor features abundant natural light and a thoughtfully designed layout perfect for entertaining. The kitchen has been updated with modern appliances and generous counter space. Each bedroom offers ample storage with well-appointed closets.\n\nSituated in a desirable neighborhood with highly-rated schools and easy access to shops, restaurants, and parks. ${price ? 'Priced at $' + parseInt(price).toLocaleString() + (type==='rent'?'/month':'') + ' — a tremendous value.' : ''}\n\nSchedule your private showing today!`;
+
+  document.getElementById('f-desc').value = desc;
+  document.getElementById('char-count').textContent = desc.length + ' characters';
+  setLoading(btn, false, '✦ AI Generate');
+  toast('Description generated!', 'success');
+}
+
+function handlePhotos(e) {
+  const files = Array.from(e.target.files);
+  renderPhotoPreview(files);
+}
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('photo-drop').style.borderColor = '';
+  const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
+  renderPhotoPreview(files);
+}
+function renderPhotoPreview(files) {
+  const container = document.getElementById('photo-preview');
+  files.forEach(f => {
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const div = document.createElement('div');
+      div.style.cssText = 'width:80px;height:60px;border-radius:6px;overflow:hidden;border:1px solid var(--border);position:relative;flex-shrink:0;';
+      div.innerHTML = `<img src="${ev.target.result}" style="width:100%;height:100%;object-fit:cover;"/><div onclick="this.parentNode.remove()" style="position:absolute;top:2px;right:2px;width:16px;height:16px;border-radius:50%;background:rgba(0,0,0,.7);color:white;font-size:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;">×</div>`;
+      container.appendChild(div);
+    };
+    reader.readAsDataURL(f);
+  });
+}
+
+function getPricingIntel() {
+  const addr = document.getElementById('f-addr').value;
+  if (!addr) return;
+  document.getElementById('pricing-intel').innerHTML = `
+    <div style="margin-bottom:8px;"><div style="font-size:11px;color:var(--text3);">Comparable sales (90d)</div><div style="font-size:15px;font-weight:600;color:var(--text);">$310k – $398k</div></div>
+    <div style="margin-bottom:8px;"><div style="font-size:11px;color:var(--text3);">Suggested list price</div><div style="font-size:15px;font-weight:600;color:var(--accent);">$339,000</div></div>
+    <div><div style="font-size:11px;color:var(--text3);">Est. days on market</div><div style="font-size:15px;font-weight:600;color:var(--text);">14–21 days</div></div>`;
+}
+document.getElementById('f-addr').addEventListener('blur', getPricingIntel);
+
+async function submitListing(status) {
+  const addr = document.getElementById('f-addr').value;
+  if (!addr) { toast('Please enter a street address.', 'warning'); return; }
+
+  const btn = document.getElementById('publish-btn');
+  setLoading(btn, true);
+  await new Promise(r => setTimeout(r, 1800));
+  setLoading(btn, false, 'Publish Listing →');
+
+  if (status === 'active') {
+    toast('Listing published to selected platforms! ✓', 'success');
+    setTimeout(() => { window.location.href = 'listings.html'; }, 1400);
+  } else {
+    toast('Saved as draft.', 'info');
+    setTimeout(() => { window.location.href = 'listings.html'; }, 1200);
+  }
+}
+</script>
+</body>
+</html>

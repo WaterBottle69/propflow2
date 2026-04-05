@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Dashboard — PropFlow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="../css/main.css"/>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="../index.html" class="nav-logo">PropFlow<span class="dot">.</span></a>
+  <div class="nav-links">
+    <a href="search.html">AI Search</a>
+    <a href="listings.html">Listings</a>
+    <a href="clients.html">Clients</a>
+    <a href="market.html">Market</a>
+  </div>
+  <div style="display:flex; align-items:center; gap:14px;">
+    <div class="nav-bell" onclick="openModal('notifications-modal')">🔔<div class="nav-bell-dot"></div></div>
+    <div class="nav-avatar" onclick="openModal('user-menu-modal')">J</div>
+  </div>
+</nav>
+
+<div class="dash-layout">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Main</div>
+      <a href="index.html" class="sidebar-item active"><span class="si-icon">⊞</span> Dashboard</a>
+      <a href="search.html" class="sidebar-item"><span class="si-icon">✦</span> AI Search</a>
+      <a href="listings.html" class="sidebar-item"><span class="si-icon">📋</span> My Listings <span class="sidebar-badge">7</span></a>
+      <a href="clients.html" class="sidebar-item"><span class="si-icon">👥</span> Clients <span class="sidebar-badge">12</span></a>
+      <a href="chat.html" class="sidebar-item"><span class="si-icon">💬</span> Messages <span class="sidebar-badge red">3</span></a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Tools</div>
+      <a href="market.html" class="sidebar-item"><span class="si-icon">📊</span> Market Insights</a>
+      <a href="schedule.html" class="sidebar-item"><span class="si-icon">📅</span> Schedule</a>
+      <a href="ai-writer.html" class="sidebar-item"><span class="si-icon">✏️</span> AI Listing Writer</a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Account</div>
+      <a href="integrations.html" class="sidebar-item"><span class="si-icon">🔗</span> Integrations</a>
+      <a href="team.html" class="sidebar-item leader-only"><span class="si-icon">🏢</span> Team</a>
+      <a href="billing.html" class="sidebar-item"><span class="si-icon">💳</span> Billing</a>
+      <a href="settings.html" class="sidebar-item"><span class="si-icon">⚙️</span> Settings</a>
+    </div>
+    <div class="sidebar-user">
+      <div class="sidebar-user-inner" onclick="openModal('user-menu-modal')">
+        <div class="s-avatar">J</div>
+        <div>
+          <div class="s-name">Jordan Mitchell</div>
+          <div class="s-role">Agent</div>
+        </div>
+        <div class="s-arrow">›</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="dash-main">
+
+    <!-- Header -->
+    <div class="dash-ph">
+      <div class="dash-ph-left">
+        <div class="greeting">Good morning,</div>
+        <div class="page-title dash-agent-name">Jordan Mitchell</div>
+      </div>
+      <div class="dash-ph-right">
+        <div style="text-align:right;">
+          <div style="font-size:12px; color:var(--text3);" data-live="date"></div>
+          <div style="font-family:'DM Mono',monospace; font-size:18px; color:var(--text2);" data-live="time"></div>
+        </div>
+        <a href="new-listing.html" class="btn btn-primary btn-sm">+ New Listing</a>
+      </div>
+    </div>
+
+    <!-- KPIs -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">Active leads</div>
+        <div class="kpi-val accent" id="kpi-leads">12</div>
+        <div class="kpi-change kpi-up">↑ 3 this week</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Active listings</div>
+        <div class="kpi-val" id="kpi-listings">7</div>
+        <div class="kpi-change kpi-up">↑ 1 new today</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Median price (area)</div>
+        <div class="kpi-val">$412k</div>
+        <div class="kpi-change kpi-up">↑ 3.2% vs last mo.</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Avg days on market</div>
+        <div class="kpi-val">18</div>
+        <div class="kpi-change kpi-down">↓ 2 days vs last mo.</div>
+      </div>
+    </div>
+
+    <!-- Content grid -->
+    <div class="content-grid">
+      <div>
+
+        <!-- AI Prompt widget -->
+        <div class="ai-widget">
+          <div class="ai-widget-header">
+            <div class="ai-orb">✦</div>
+            <h3>PropFlow AI</h3>
+            <div class="ai-status"><div class="ai-dot" style="animation:pulse 2s infinite;"></div>Ready</div>
+          </div>
+          <div class="prompt-area">
+            <div style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
+              <label style="font-size:12px; color:var(--text3); white-space:nowrap;">For client:</label>
+              <select id="client-select" style="flex:1;">
+                <option value="">No client — general search</option>
+                <option value="sarah">Sarah K. — $350k budget, 2bd/2ba</option>
+                <option value="marcus">Marcus T. — $500k budget, 3bd+</option>
+                <option value="priya">Priya M. — Rental, $2k/mo</option>
+              </select>
+            </div>
+            <textarea class="prompt-textarea" id="main-prompt" rows="3" placeholder="e.g. My client wants 2 bed 2 bath under $350k near good schools, open to renting first…"></textarea>
+            <div class="prompt-row">
+              <div class="prompt-chips">
+                <div class="chip" onclick="fillPrompt('2bd 2ba under $350k near top schools')">2bd/2ba + schools</div>
+                <div class="chip" onclick="fillPrompt('3 bedroom with garage single family')">3bd + garage</div>
+                <div class="chip" onclick="fillPrompt('rental under $2000 pet friendly')">Pet-friendly rental</div>
+                <div class="chip" onclick="fillPrompt('schedule a showing for 88 Oak Ave tomorrow at 2pm')">Schedule showing</div>
+              </div>
+              <button class="btn-run" id="search-btn" onclick="runSearch()">Search ✦</button>
+            </div>
+          </div>
+          <div class="loading" id="loading-state">
+            <div class="spinner"></div>
+            <div class="loading-text" id="loading-text">Searching Zillow, Realtor.com and MLS…</div>
+          </div>
+          <div class="ai-response" id="ai-results">
+            <div class="ai-intro" id="results-intro"></div>
+            <div id="market-context" style="padding:9px 13px; background:var(--bg3); border-radius:var(--radius-sm); font-size:12px; color:var(--text3); margin-bottom:10px; border:1px solid var(--border);"></div>
+            <div id="results-list"></div>
+          </div>
+        </div>
+
+        <!-- Lead pipeline -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Lead pipeline</span>
+            <a href="clients.html" class="card-action">View all →</a>
+          </div>
+          <div style="padding:14px; display:flex; gap:8px;">
+            <div class="stage-box" style="flex:1; background:var(--bg3); border:1px solid var(--border); border-radius:var(--radius-sm); padding:12px; text-align:center;">
+              <div style="font-size:10px; color:var(--text3); text-transform:uppercase; letter-spacing:.06em; margin-bottom:6px;">New</div>
+              <div style="font-size:22px; font-weight:600; color:var(--text);">4</div>
+              <div style="font-size:10px; color:var(--text3);">inquiries</div>
+            </div>
+            <div class="stage-box" style="flex:1; background:var(--accent-dim2); border:1px solid rgba(74,222,128,.3); border-radius:var(--radius-sm); padding:12px; text-align:center;">
+              <div style="font-size:10px; color:var(--accent); text-transform:uppercase; letter-spacing:.06em; margin-bottom:6px;">Active</div>
+              <div style="font-size:22px; font-weight:600; color:var(--accent);">5</div>
+              <div style="font-size:10px; color:var(--text3);">working</div>
+            </div>
+            <div class="stage-box" style="flex:1; background:var(--bg3); border:1px solid var(--border); border-radius:var(--radius-sm); padding:12px; text-align:center;">
+              <div style="font-size:10px; color:var(--text3); text-transform:uppercase; letter-spacing:.06em; margin-bottom:6px;">Offer</div>
+              <div style="font-size:22px; font-weight:600; color:var(--text);">2</div>
+              <div style="font-size:10px; color:var(--text3);">pending</div>
+            </div>
+            <div class="stage-box" style="flex:1; background:var(--bg3); border:1px solid var(--border); border-radius:var(--radius-sm); padding:12px; text-align:center;">
+              <div style="font-size:10px; color:var(--text3); text-transform:uppercase; letter-spacing:.06em; margin-bottom:6px;">Closing</div>
+              <div style="font-size:22px; font-weight:600; color:var(--gold);">1</div>
+              <div style="font-size:10px; color:var(--text3);">this month</div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /left col -->
+
+      <!-- Right col -->
+      <div style="display:flex; flex-direction:column; gap:14px;">
+
+        <!-- Alerts -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Alerts</span>
+            <span class="card-action">Mark all read</span>
+          </div>
+          <div class="card-body" style="padding:0 16px;">
+            <div class="alert-item">
+              <div class="alert-dot" style="width:7px;height:7px;border-radius:50%;background:var(--red);flex-shrink:0;margin-top:4px;"></div>
+              <div>
+                <div style="font-size:13px; color:var(--text2);">Offer on <strong>124 Elm St</strong> expires in <strong>2 hours</strong></div>
+                <div style="font-size:11px; color:var(--text3); margin-top:2px;">Just now</div>
+              </div>
+            </div>
+            <div class="alert-item" style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);">
+              <div style="width:7px;height:7px;border-radius:50%;background:var(--accent);flex-shrink:0;margin-top:4px;"></div>
+              <div>
+                <div style="font-size:13px; color:var(--text2);">New listing matches Sarah K.'s criteria</div>
+                <div style="font-size:11px; color:var(--text3); margin-top:2px;">14 min ago</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);">
+              <div style="width:7px;height:7px;border-radius:50%;background:var(--blue);flex-shrink:0;margin-top:4px;"></div>
+              <div>
+                <div style="font-size:13px; color:var(--text2);">Zillow synced 3 new leads from 412 Maple</div>
+                <div style="font-size:11px; color:var(--text3); margin-top:2px;">1 hr ago</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:10px;padding:10px 0;">
+              <div style="width:7px;height:7px;border-radius:50%;background:var(--amber);flex-shrink:0;margin-top:4px;"></div>
+              <div>
+                <div style="font-size:13px; color:var(--text2);">Price drop: 210 Birchwood → $344,500</div>
+                <div style="font-size:11px; color:var(--text3); margin-top:2px;">3 hrs ago</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Today's schedule -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Today's schedule</span>
+            <a href="schedule.html" class="card-action">+ Add</a>
+          </div>
+          <div class="card-body" style="padding:0 16px;">
+            <div id="today-events"></div>
+          </div>
+        </div>
+
+        <!-- Market snapshot -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Market snapshot</span>
+            <span style="font-size:11px; color:var(--text3);" id="market-location">Your area</span>
+          </div>
+          <div class="card-body" style="padding:0 16px;">
+            <div class="market-row"><span class="market-label">Median sale price</span><span class="market-val market-up">$412,000 ↑</span></div>
+            <div class="market-row"><span class="market-label">Avg days on market</span><span class="market-val market-down">18 days ↓</span></div>
+            <div class="market-row"><span class="market-label">Active inventory</span><span class="market-val market-neutral">284 homes</span></div>
+            <div class="market-row"><span class="market-label">List/sale ratio</span><span class="market-val market-up">103% ↑</span></div>
+            <div class="market-row"><span class="market-label">New listings (30d)</span><span class="market-val market-neutral">47</span></div>
+          </div>
+        </div>
+
+        <!-- Integration status -->
+        <div class="card">
+          <div class="card-header"><span class="card-title">Connected platforms</span><a href="integrations.html" class="card-action">Manage</a></div>
+          <div class="card-body" style="padding:12px 16px; display:flex; flex-direction:column; gap:8px;">
+            <div style="display:flex; align-items:center; justify-content:space-between;">
+              <div style="font-size:13px; color:var(--text2);">🏡 Zillow</div>
+              <span class="badge badge-green" id="zillow-status">Connected</span>
+            </div>
+            <div style="display:flex; align-items:center; justify-content:space-between;">
+              <div style="font-size:13px; color:var(--text2);">🏘 Realtor.com</div>
+              <span class="badge badge-gray" id="realtor-status">Not connected</span>
+            </div>
+            <div style="display:flex; align-items:center; justify-content:space-between;">
+              <div style="font-size:13px; color:var(--text2);">📅 Google Calendar</div>
+              <span class="badge badge-gray" id="gcal-status">Not connected</span>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /right col -->
+    </div><!-- /content-grid -->
+  </div><!-- /dash-main -->
+</div><!-- /dash-layout -->
+
+<!-- Notifications Modal -->
+<div class="modal-overlay" id="notifications-modal">
+  <div class="modal">
+    <div class="modal-header"><h3>Notifications</h3><span class="modal-close" onclick="closeModal('notifications-modal')">×</span></div>
+    <div class="modal-body">
+      <div style="font-size:13px; color:var(--text2); line-height:1.8;">
+        <div style="padding:10px 0; border-bottom:1px solid var(--border);">🔴 &nbsp;Offer on 124 Elm St expires in 2 hours</div>
+        <div style="padding:10px 0; border-bottom:1px solid var(--border);">🟢 &nbsp;New match for Sarah K. — 88 Oak Ave</div>
+        <div style="padding:10px 0; border-bottom:1px solid var(--border);">🔵 &nbsp;3 new Zillow leads on 412 Maple St</div>
+        <div style="padding:10px 0;">🟡 &nbsp;Price drop: 210 Birchwood → $344,500</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- User Menu Modal -->
+<div class="modal-overlay" id="user-menu-modal">
+  <div class="modal" style="max-width:280px;">
+    <div class="modal-body" style="padding:16px;">
+      <div style="display:flex; align-items:center; gap:12px; padding-bottom:14px; border-bottom:1px solid var(--border); margin-bottom:12px;">
+        <div class="s-avatar" style="width:40px;height:40px;font-size:16px;">J</div>
+        <div>
+          <div class="s-name" style="font-size:14px;">Jordan Mitchell</div>
+          <div class="s-role">Agent · Pro plan</div>
+        </div>
+      </div>
+      <a href="settings.html" class="sidebar-item" style="text-decoration:none;">⚙️ &nbsp;Account settings</a>
+      <a href="billing.html" class="sidebar-item" style="text-decoration:none;">💳 &nbsp;Billing & plan</a>
+      <a href="integrations.html" class="sidebar-item" style="text-decoration:none;">🔗 &nbsp;Integrations</a>
+      <div class="divider"></div>
+      <div class="sidebar-item" data-action="signout" style="color:var(--red);">↪ &nbsp;Sign out</div>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../config.js"></script>
+<script src="../js/supabase-client.js"></script>
+<script src="../js/auth-guard.js"></script>
+<script src="../js/app.js"></script>
+<script>
+// ── Request location on load ──
+requestLocation().then(loc => {
+  if (loc) document.getElementById('market-location').textContent =
+    loc.lat.toFixed(2) + '°N, ' + Math.abs(loc.lng).toFixed(2) + '°W';
+});
+
+// ── Today's schedule ──
+const events = [
+  { time: '10:00', title: 'Showing — Sarah K.', sub: '124 Elm Street', color: 'var(--accent)' },
+  { time: '13:30', title: 'Showing — Marcus T.', sub: '88 Oak Avenue', color: 'var(--accent)' },
+  { time: '15:00', title: 'Offer review call', sub: 'Priya M. + attorney', color: 'var(--amber)' },
+  { time: '17:00', title: 'Open house', sub: '210 Birchwood Lane', color: 'var(--blue)' },
+];
+const evEl = document.getElementById('today-events');
+events.forEach(ev => {
+  evEl.innerHTML += `<div style="display:flex;gap:12px;padding:9px 0;border-bottom:1px solid var(--border);align-items:center;">
+    <div style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;width:42px;flex-shrink:0;">${ev.time}</div>
+    <div style="flex:1;"><div style="font-size:13px;color:var(--text);">${ev.title}</div><div style="font-size:11px;color:var(--text3);">${ev.sub}</div></div>
+    <div style="width:7px;height:7px;border-radius:50%;background:${ev.color};flex-shrink:0;"></div>
+  </div>`;
+});
+
+// ── AI Search ──
+const clientData = {
+  sarah:  { name: 'Sarah K.', budget: '$350,000', type: 'buyer', notes: '2bd/2ba, near schools' },
+  marcus: { name: 'Marcus T.', budget: '$500,000', type: 'buyer', notes: '3bd+' },
+  priya:  { name: 'Priya M.', budget: '$2,000/mo', type: 'renter', notes: 'Rental preferred' },
+};
+
+function fillPrompt(text) {
+  document.getElementById('main-prompt').value = text;
+  document.getElementById('main-prompt').focus();
+}
+
+async function runSearch() {
+  const prompt  = document.getElementById('main-prompt').value.trim();
+  const clientId = document.getElementById('client-select').value;
+  if (!prompt && !clientId) { document.getElementById('main-prompt').focus(); return; }
+
+  // Check if it's an action prompt
+  if (isActionPrompt(prompt)) { handleAction(prompt); return; }
+
+  const loading = document.getElementById('loading-state');
+  const results = document.getElementById('ai-results');
+  const btn     = document.getElementById('search-btn');
+
+  results.classList.remove('visible');
+  loading.classList.add('active');
+  btn.disabled = true;
+
+  const messages = [
+    'Searching Zillow, Realtor.com and MLS…',
+    'Applying filters and scoring matches…',
+    'Fetching market context…',
+    'Ranking top results for you…',
+  ];
+  let mi = 0;
+  const rot = setInterval(() => {
+    document.getElementById('loading-text').textContent = messages[(++mi) % messages.length];
+  }, 800);
+
+  const fullPrompt = clientId
+    ? `${clientData[clientId]?.notes || ''} ${prompt}`
+    : prompt;
+
+  const data = await runAISearch(fullPrompt, clientData[clientId] || null);
+
+  clearInterval(rot);
+  loading.classList.remove('active');
+  btn.disabled = false;
+  renderResults(data);
+}
+
+function isActionPrompt(p) {
+  return /schedule|book|appointment|showing|meeting|create listing|add listing|send message/i.test(p);
+}
+
+function handleAction(prompt) {
+  const p = prompt.toLowerCase();
+  if (/schedule|showing|appointment|meeting/i.test(p)) {
+    toast('Opening calendar to schedule…', 'info');
+    setTimeout(() => { window.location.href = 'schedule.html?new=1&prompt=' + encodeURIComponent(prompt); }, 800);
+  } else if (/create listing|add listing|new listing/i.test(p)) {
+    toast('Opening listing form…', 'info');
+    setTimeout(() => { window.location.href = 'new-listing.html?prompt=' + encodeURIComponent(prompt); }, 800);
+  } else if (/send message|message client/i.test(p)) {
+    toast('Opening client messages…', 'info');
+    setTimeout(() => { window.location.href = 'chat.html'; }, 800);
+  }
+}
+
+function renderResults(data) {
+  document.getElementById('results-intro').textContent = data.intro;
+
+  const mctx = document.getElementById('market-context');
+  if (data.market_context) {
+    mctx.textContent = '📊 ' + data.market_context.label;
+    mctx.style.display = 'block';
+  } else {
+    mctx.style.display = 'none';
+  }
+
+  const list = document.getElementById('results-list');
+  list.innerHTML = '';
+
+  data.listings.forEach((l, i) => {
+    const rankColors = ['var(--gold)', 'var(--text2)', 'var(--text3)'];
+    const rankLabels = ['🥇', '🥈', '🥉'];
+    const isSale = l.type === 'sale';
+    const tags = (l.tags || []).map(t => {
+      const featured = /best|top|most popular|cheapest/i.test(t);
+      return `<span class="ltag ${featured ? 'featured' : ''}">${t}</span>`;
+    }).join('');
+    const scoreW = Math.round((l.score / 100) * 100);
+
+    list.innerHTML += `
+    <div class="listing-card" onclick="toast('Opening ${l.addr}…', 'info')">
+      <div class="listing-thumb">${l.icon || '🏠'}</div>
+      <div class="listing-info">
+        <div class="listing-head">
+          <div>
+            <span class="badge ${isSale ? 'badge-green' : 'badge-blue'}" style="font-size:9px;margin-right:6px;">${isSale ? 'FOR SALE' : 'FOR RENT'}</span>
+            <span class="listing-addr">${l.addr}</span>
+          </div>
+          <div class="listing-price">${l.price_display || (isSale ? '$' + l.price?.toLocaleString() : '$' + l.price?.toLocaleString() + '/mo')}</div>
+        </div>
+        <div class="listing-sub">${l.detail}</div>
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+          <span style="font-size:10px; color:var(--text3);">Match</span>
+          <div class="score-bar-wrap"><div class="score-bar" style="width:${scoreW}%"></div></div>
+          <span style="font-size:11px; font-weight:600; color:var(--accent);">${l.score}/100</span>
+          <span style="font-size:12px;">${rankLabels[i] || ''}</span>
+        </div>
+        <div class="listing-tags">${tags}</div>
+      </div>
+    </div>`;
+  });
+
+  document.getElementById('ai-results').classList.add('visible');
+  document.getElementById('ai-results').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// Load integration statuses from localStorage (set on integrations page)
+const connected = JSON.parse(localStorage.getItem('pf_integrations') || '{}');
+if (connected.zillow) { document.getElementById('zillow-status').className = 'badge badge-green'; document.getElementById('zillow-status').textContent = 'Connected'; }
+if (connected.realtor) { document.getElementById('realtor-status').className = 'badge badge-green'; document.getElementById('realtor-status').textContent = 'Connected'; }
+if (connected.google) { document.getElementById('gcal-status').className = 'badge badge-green'; document.getElementById('gcal-status').textContent = 'Connected'; }
+</script>
+</body>
+</html>

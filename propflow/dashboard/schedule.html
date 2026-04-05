@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Schedule — PropFlow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="../css/main.css"/>
+</head>
+<body>
+<nav class="nav">
+  <a href="../index.html" class="nav-logo">PropFlow<span class="dot">.</span></a>
+  <div class="nav-links"><a href="index.html">Dashboard</a><a href="clients.html">Clients</a></div>
+  <div style="display:flex;align-items:center;gap:14px;"><div class="nav-avatar">J</div></div>
+</nav>
+<div class="dash-layout">
+  <div class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Main</div>
+      <a href="index.html" class="sidebar-item"><span class="si-icon">⊞</span> Dashboard</a>
+      <a href="search.html" class="sidebar-item"><span class="si-icon">✦</span> AI Search</a>
+      <a href="listings.html" class="sidebar-item"><span class="si-icon">📋</span> My Listings</a>
+      <a href="clients.html" class="sidebar-item"><span class="si-icon">👥</span> Clients</a>
+      <a href="chat.html" class="sidebar-item"><span class="si-icon">💬</span> Messages</a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Tools</div>
+      <a href="market.html" class="sidebar-item"><span class="si-icon">📊</span> Market Insights</a>
+      <a href="schedule.html" class="sidebar-item active"><span class="si-icon">📅</span> Schedule</a>
+      <a href="ai-writer.html" class="sidebar-item"><span class="si-icon">✏️</span> AI Listing Writer</a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Account</div>
+      <a href="integrations.html" class="sidebar-item"><span class="si-icon">🔗</span> Integrations</a>
+      <a href="team.html" class="sidebar-item leader-only"><span class="si-icon">🏢</span> Team</a>
+      <a href="billing.html" class="sidebar-item"><span class="si-icon">💳</span> Billing</a>
+      <a href="settings.html" class="sidebar-item"><span class="si-icon">⚙️</span> Settings</a>
+    </div>
+    <div class="sidebar-user">
+      <div class="sidebar-user-inner">
+        <div class="s-avatar">J</div>
+        <div><div class="s-name">Jordan Mitchell</div><div class="s-role">Agent</div></div>
+        <div class="s-arrow">›</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dash-main">
+    <div class="dash-ph">
+      <div class="dash-ph-left">
+        <div class="eyebrow">Calendar</div>
+        <div class="page-title" id="month-label">April 2026</div>
+      </div>
+      <div class="dash-ph-right">
+        <button class="btn btn-ghost btn-sm" onclick="changeMonth(-1)">‹ Prev</button>
+        <button class="btn btn-ghost btn-sm" onclick="changeMonth(1)">Next ›</button>
+        <button class="btn btn-ghost btn-sm" onclick="syncGCal()" id="gcal-btn">
+          📅 Sync Google Calendar
+        </button>
+        <button class="btn btn-primary" onclick="openModal('new-event-modal')">+ Add Event</button>
+      </div>
+    </div>
+
+    <!-- Google Calendar connection banner -->
+    <div id="gcal-banner" style="padding:12px 16px;background:rgba(96,165,250,.08);border:1px solid rgba(96,165,250,.2);border-radius:var(--radius);margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;">
+      <div style="font-size:13px;color:var(--text2);">📅 &nbsp;Connect Google Calendar to sync your PropFlow events two-way with your Google account.</div>
+      <button class="btn btn-ghost btn-sm" onclick="connectGCal()">Connect Google Calendar →</button>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 300px;gap:16px;">
+      <!-- Calendar grid -->
+      <div class="card">
+        <div class="card-body" style="padding:0;">
+          <div class="cal-grid" id="cal-grid"></div>
+        </div>
+      </div>
+
+      <!-- Right panel -->
+      <div style="display:flex;flex-direction:column;gap:14px;">
+
+        <!-- Today's agenda -->
+        <div class="card">
+          <div class="card-header"><span class="card-title">Today's agenda</span><span style="font-size:11px;color:var(--text3);" data-live="date"></span></div>
+          <div class="card-body" id="today-agenda" style="padding:0 16px;"></div>
+        </div>
+
+        <!-- Upcoming events -->
+        <div class="card">
+          <div class="card-header"><span class="card-title">Upcoming (7 days)</span></div>
+          <div class="card-body" id="upcoming-events" style="padding:0 16px;"></div>
+        </div>
+
+        <!-- Quick add -->
+        <div class="card">
+          <div class="card-header"><span class="card-title">Quick add via AI</span></div>
+          <div class="card-body">
+            <textarea id="quick-add-input" rows="2" placeholder="e.g. 'Schedule a showing for Sarah at 88 Oak Ave tomorrow at 2pm'" style="margin-bottom:10px;"></textarea>
+            <button class="btn btn-primary btn-full btn-sm" onclick="quickAddEvent()">✦ Add event</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- New event modal -->
+<div class="modal-overlay" id="new-event-modal">
+  <div class="modal modal-lg">
+    <div class="modal-header"><h3>New event</h3><span class="modal-close" onclick="closeModal('new-event-modal')">×</span></div>
+    <div class="modal-body">
+      <div class="form-group"><label>Event title *</label><input type="text" id="ev-title" placeholder="Showing — Sarah Kim"/></div>
+      <div class="form-group"><label>Event type</label>
+        <select id="ev-type">
+          <option value="showing">Property Showing</option>
+          <option value="meeting">Client Meeting</option>
+          <option value="open-house">Open House</option>
+          <option value="call">Phone Call</option>
+          <option value="closing">Closing</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Date *</label><input type="date" id="ev-date"/></div>
+        <div class="form-group"><label>Time *</label><input type="time" id="ev-time" value="10:00"/></div>
+      </div>
+      <div class="form-group"><label>Duration</label>
+        <select id="ev-duration">
+          <option value="30">30 minutes</option>
+          <option value="60" selected>1 hour</option>
+          <option value="90">1.5 hours</option>
+          <option value="120">2 hours</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Property / Location</label><input type="text" id="ev-location" placeholder="124 Elm Street, Madison WI"/></div>
+      <div class="form-group"><label>Client</label>
+        <select id="ev-client">
+          <option value="">No client</option>
+          <option>Sarah Kim</option><option>Marcus Thompson</option><option>Priya Mehta</option>
+          <option>Jason Rodriguez</option><option>Amy Chen</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Notes</label><textarea id="ev-notes" rows="2" placeholder="Any notes for this event…"></textarea></div>
+      <div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--bg3);border-radius:var(--radius-sm);">
+        <button class="toggle on" id="gcal-sync-toggle" onclick="this.classList.toggle('on')"></button>
+        <span style="font-size:13px;color:var(--text2);">Sync to Google Calendar</span>
+        <span style="font-size:11px;color:var(--text3);margin-left:auto;">Requires Google Calendar connection</span>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('new-event-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveEvent()">Save event →</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../config.js"></script>
+<script src="../js/supabase-client.js"></script>
+<script src="../js/auth-guard.js"></script>
+<script src="../js/app.js"></script>
+<script>
+let currentDate = new Date();
+const today = new Date();
+
+// Pre-fill date from URL params
+const params = new URLSearchParams(window.location.search);
+if (params.get('new') === '1') {
+  setTimeout(() => {
+    openModal('new-event-modal');
+    if (params.get('address')) document.getElementById('ev-location').value = params.get('address');
+    // Set date to tomorrow by default
+    const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1);
+    document.getElementById('ev-date').value = tomorrow.toISOString().slice(0,10);
+  }, 100);
+}
+
+const EVENTS = [
+  { date: fmtDate(today), time:'10:00', title:'Showing — Sarah K.', type:'showing', client:'Sarah Kim', location:'124 Elm Street', color:'showing' },
+  { date: fmtDate(today), time:'13:30', title:'Showing — Marcus T.', type:'showing', client:'Marcus Thompson', location:'88 Oak Avenue', color:'showing' },
+  { date: fmtDate(today), time:'15:00', title:'Offer review call', type:'call', client:'Priya Mehta', location:'', color:'meeting' },
+  { date: fmtDate(today), time:'17:00', title:'Open house', type:'open-house', client:'', location:'210 Birchwood Lane', color:'open-house' },
+  { date: fmtDateOffset(1), time:'09:00', title:'Client meeting — Amy Chen', type:'meeting', client:'Amy Chen', location:'PropFlow Office', color:'meeting' },
+  { date: fmtDateOffset(2), time:'11:00', title:'Showing — Jason R.', type:'showing', client:'Jason Rodriguez', location:'34 Willow Creek Drive', color:'showing' },
+  { date: fmtDateOffset(4), time:'14:00', title:'Closing — David Park', type:'closing', client:'David Park', location:'Title Co.', color:'meeting' },
+  { date: fmtDateOffset(5), time:'10:00', title:'Open house', type:'open-house', client:'', location:'88 Oak Avenue', color:'open-house' },
+];
+
+function fmtDate(d) { return d.toISOString().slice(0,10); }
+function fmtDateOffset(n) { const d = new Date(); d.setDate(d.getDate() + n); return fmtDate(d); }
+
+function renderCalendar() {
+  const yr = currentDate.getFullYear();
+  const mo = currentDate.getMonth();
+  document.getElementById('month-label').textContent = currentDate.toLocaleString('en-US',{month:'long',year:'numeric'});
+
+  const first = new Date(yr, mo, 1).getDay();
+  const days = new Date(yr, mo+1, 0).getDate();
+  const prevDays = new Date(yr, mo, 0).getDate();
+
+  let html = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(d => `<div class="cal-header-cell">${d}</div>`).join('');
+
+  // Prev month padding
+  for (let i = first - 1; i >= 0; i--) {
+    html += `<div class="cal-day other-month"><div class="cal-day-num">${prevDays - i}</div></div>`;
+  }
+
+  for (let d = 1; d <= days; d++) {
+    const dateStr = yr + '-' + String(mo+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+    const isToday = dateStr === fmtDate(today);
+    const dayEvents = EVENTS.filter(e => e.date === dateStr);
+    const evHtml = dayEvents.slice(0,3).map(e => `<div class="cal-event ${e.color}" title="${e.title}">${e.time} ${e.title}</div>`).join('');
+    html += `<div class="cal-day ${isToday?'today':''}" onclick="openDay('${dateStr}')">
+      <div class="cal-day-num">${d}</div>
+      ${evHtml}
+      ${dayEvents.length > 3 ? `<div style="font-size:9px;color:var(--text3);">+${dayEvents.length-3} more</div>` : ''}
+    </div>`;
+  }
+
+  // Remaining cells
+  const total = first + days;
+  const remain = total % 7 === 0 ? 0 : 7 - (total % 7);
+  for (let d = 1; d <= remain; d++) {
+    html += `<div class="cal-day other-month"><div class="cal-day-num">${d}</div></div>`;
+  }
+
+  document.getElementById('cal-grid').innerHTML = html;
+}
+
+function changeMonth(dir) {
+  currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + dir, 1);
+  renderCalendar();
+}
+
+function renderAgenda() {
+  const todayEvs = EVENTS.filter(e => e.date === fmtDate(today));
+  const el = document.getElementById('today-agenda');
+  if (!todayEvs.length) { el.innerHTML = '<div style="font-size:13px;color:var(--text3);padding:8px 0;">No events today</div>'; return; }
+  el.innerHTML = todayEvs.map(e => `
+    <div style="display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);align-items:flex-start;">
+      <div style="font-size:11px;font-family:'DM Mono',monospace;color:var(--text3);width:40px;flex-shrink:0;">${e.time}</div>
+      <div style="flex:1;"><div style="font-size:13px;color:var(--text);">${e.title}</div>${e.location?`<div style="font-size:11px;color:var(--text3);">${e.location}</div>`:''}</div>
+      <div style="width:6px;height:6px;border-radius:50%;background:${e.color==='showing'?'var(--accent)':e.color==='meeting'?'var(--blue)':'var(--amber)'};flex-shrink:0;margin-top:4px;"></div>
+    </div>`).join('');
+}
+
+function renderUpcoming() {
+  const upcoming = EVENTS.filter(e => e.date > fmtDate(today)).slice(0, 5);
+  const el = document.getElementById('upcoming-events');
+  if (!upcoming.length) { el.innerHTML = '<div style="font-size:13px;color:var(--text3);padding:8px 0;">No upcoming events</div>'; return; }
+  el.innerHTML = upcoming.map(e => `
+    <div style="display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);align-items:flex-start;">
+      <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--text3);text-align:center;flex-shrink:0;line-height:1.4;"><div>${new Date(e.date+'T00:00:00').toLocaleDateString('en-US',{month:'short'})}</div><div style="font-size:16px;color:var(--text);">${new Date(e.date+'T00:00:00').getDate()}</div></div>
+      <div style="flex:1;"><div style="font-size:13px;color:var(--text);">${e.title}</div><div style="font-size:11px;color:var(--text3);">${e.time}${e.location?' · '+e.location:''}</div></div>
+    </div>`).join('');
+}
+
+function openDay(dateStr) {
+  document.getElementById('ev-date').value = dateStr;
+  openModal('new-event-modal');
+}
+
+function saveEvent() {
+  const title = document.getElementById('ev-title').value;
+  if (!title) { toast('Event title required.', 'warning'); return; }
+  const date = document.getElementById('ev-date').value;
+  const time = document.getElementById('ev-time').value;
+  const type = document.getElementById('ev-type').value;
+  EVENTS.push({ date, time, title, type, color: type === 'showing' ? 'showing' : type === 'open-house' ? 'open-house' : 'meeting', location: document.getElementById('ev-location').value });
+
+  const syncToGoogle = document.getElementById('gcal-sync-toggle').classList.contains('on');
+  const isGCalConnected = JSON.parse(localStorage.getItem('pf_integrations') || '{}').google;
+
+  if (syncToGoogle && isGCalConnected) {
+    toast('Event saved and synced to Google Calendar! ✓', 'success');
+  } else if (syncToGoogle && !isGCalConnected) {
+    toast('Event saved. Connect Google Calendar in Integrations to sync.', 'info');
+  } else {
+    toast('Event saved!', 'success');
+  }
+
+  closeModal('new-event-modal');
+  renderCalendar(); renderAgenda(); renderUpcoming();
+}
+
+async function quickAddEvent() {
+  const input = document.getElementById('quick-add-input').value;
+  if (!input) return;
+
+  toast('Parsing your event…', 'info');
+  await new Promise(r => setTimeout(r, 900));
+
+  // Simple AI parser (demo)
+  const titleMatch = input.match(/showing|meeting|open house|call|closing/i);
+  const timeMatch = input.match(/(\d{1,2}(?::\d{2})?\s*(?:am|pm)?)/i);
+  const clientMatch = input.match(/for\s+(\w+)/i);
+  const addrMatch = input.match(/at\s+([\w\s]+(?:ave|street|st|drive|dr|lane|ln|blvd|road|rd))/i);
+  const tomorrowMatch = /tomorrow/i.test(input);
+
+  const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1);
+  const evDate = tomorrowMatch ? fmtDate(tomorrow) : fmtDate(today);
+  const evTitle = (titleMatch ? titleMatch[0].charAt(0).toUpperCase()+titleMatch[0].slice(1) : 'Event') +
+    (clientMatch ? ' — ' + clientMatch[1] : '');
+  const evTime = timeMatch ? timeMatch[1] : '10:00';
+  const evLoc = addrMatch ? addrMatch[1] : '';
+
+  document.getElementById('ev-title').value = evTitle;
+  document.getElementById('ev-date').value = evDate;
+  document.getElementById('ev-time').value = normalizeTime(evTime);
+  document.getElementById('ev-location').value = evLoc;
+  document.getElementById('quick-add-input').value = '';
+  openModal('new-event-modal');
+}
+
+function normalizeTime(t) {
+  if (!t) return '10:00';
+  const pmMatch = t.match(/(\d{1,2})(?::(\d{2}))?\s*pm/i);
+  const amMatch = t.match(/(\d{1,2})(?::(\d{2}))?\s*am/i);
+  if (pmMatch) { let h = parseInt(pmMatch[1]) + (parseInt(pmMatch[1]) < 12 ? 12 : 0); return String(h).padStart(2,'0') + ':' + (pmMatch[2]||'00'); }
+  if (amMatch) { return String(amMatch[1]).padStart(2,'0') + ':' + (amMatch[2]||'00'); }
+  if (/^\d{1,2}$/.test(t.trim())) { let h = parseInt(t); return String(h < 8 ? h+12 : h).padStart(2,'0') + ':00'; }
+  return t;
+}
+
+function connectGCal() {
+  window.location.href = 'integrations.html';
+}
+
+function syncGCal() {
+  const connected = JSON.parse(localStorage.getItem('pf_integrations') || '{}');
+  if (!connected.google) {
+    toast('Connect Google Calendar first in Integrations.', 'info');
+    setTimeout(() => { window.location.href = 'integrations.html'; }, 1200);
+    return;
+  }
+  toast('Syncing with Google Calendar…', 'info');
+  setTimeout(() => toast('Calendar synced! ✓ 8 events updated.', 'success'), 1500);
+}
+
+// Check if GCal connected
+const intConnected = JSON.parse(localStorage.getItem('pf_integrations') || '{}');
+if (intConnected.google) document.getElementById('gcal-banner').style.display = 'none';
+
+renderCalendar();
+renderAgenda();
+renderUpcoming();
+</script>
+</body>
+</html>
