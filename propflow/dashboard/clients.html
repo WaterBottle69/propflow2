@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Clients — PropFlow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="../css/main.css"/>
+</head>
+<body>
+<nav class="nav">
+  <a href="../index.html" class="nav-logo">PropFlow<span class="dot">.</span></a>
+  <div style="display:flex;align-items:center;gap:14px;"><div class="nav-avatar">J</div></div>
+</nav>
+<div class="dash-layout">
+  <div class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Main</div>
+      <a href="index.html" class="sidebar-item"><span class="si-icon">⊞</span> Dashboard</a>
+      <a href="search.html" class="sidebar-item"><span class="si-icon">✦</span> AI Search</a>
+      <a href="listings.html" class="sidebar-item"><span class="si-icon">📋</span> My Listings</a>
+      <a href="clients.html" class="sidebar-item active"><span class="si-icon">👥</span> Clients</a>
+      <a href="chat.html" class="sidebar-item"><span class="si-icon">💬</span> Messages</a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Tools</div>
+      <a href="schedule.html" class="sidebar-item"><span class="si-icon">📅</span> Schedule</a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Account</div>
+      <a href="integrations.html" class="sidebar-item"><span class="si-icon">🔗</span> Integrations</a>
+      <a href="team.html" class="sidebar-item leader-only"><span class="si-icon">🏢</span> Team</a>
+      <a href="billing.html" class="sidebar-item"><span class="si-icon">💳</span> Billing</a>
+      <a href="settings.html" class="sidebar-item"><span class="si-icon">⚙️</span> Settings</a>
+    </div>
+    <div class="sidebar-user">
+      <div class="sidebar-user-inner">
+        <div class="s-avatar">J</div>
+        <div><div class="s-name">Jordan Mitchell</div><div class="s-role">Agent</div></div>
+        <div class="s-arrow">›</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dash-main">
+    <div class="dash-ph">
+      <div class="dash-ph-left">
+        <div class="eyebrow">CRM</div>
+        <div class="page-title">Clients</div>
+      </div>
+      <div class="dash-ph-right">
+        <input type="text" id="client-search" placeholder="Search clients…" style="width:200px;" oninput="filterClients()"/>
+        <select id="stage-filter" style="width:130px;" onchange="filterClients()">
+          <option value="">All stages</option>
+          <option value="new">New</option>
+          <option value="active">Active</option>
+          <option value="offer">Offer</option>
+          <option value="closing">Closing</option>
+          <option value="closed">Closed</option>
+        </select>
+        <button class="btn btn-primary" onclick="openModal('add-client-modal')">+ Add Client</button>
+      </div>
+    </div>
+
+    <!-- Pipeline view -->
+    <div class="pipeline" id="pipeline-view"></div>
+
+    <!-- List view -->
+    <div class="card" style="margin-top:16px;">
+      <div class="card-header"><span class="card-title">All clients</span><span id="clients-count" style="font-size:12px;color:var(--text3);">12 clients</span></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Client</th><th>Type</th><th>Budget</th><th>Stage</th><th>Last contact</th><th>Matches</th><th>Actions</th></tr></thead>
+          <tbody id="clients-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add client modal -->
+<div class="modal-overlay" id="add-client-modal">
+  <div class="modal modal-lg">
+    <div class="modal-header"><h3>Add new client</h3><span class="modal-close" onclick="closeModal('add-client-modal')">×</span></div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group"><label>First name *</label><input type="text" id="nc-first" placeholder="Sarah"/></div>
+        <div class="form-group"><label>Last name *</label><input type="text" id="nc-last" placeholder="Kim"/></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Email</label><input type="email" id="nc-email" placeholder="sarah@email.com"/></div>
+        <div class="form-group"><label>Phone</label><input type="tel" id="nc-phone" placeholder="(608) 555-1234"/></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Client type</label>
+          <select id="nc-clienttype">
+            <option value="buyer">Buyer</option>
+            <option value="renter">Renter</option>
+            <option value="seller">Seller</option>
+            <option value="investor">Investor</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Pipeline stage</label>
+          <select id="nc-stage">
+            <option value="new">New lead</option>
+            <option value="active">Active</option>
+            <option value="offer">Offer stage</option>
+            <option value="closing">Closing</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Budget</label><input type="text" id="nc-budget" placeholder="$350,000 or $2,000/mo"/></div>
+        <div class="form-group"><label>Target area</label><input type="text" id="nc-area" placeholder="Madison, WI"/></div>
+      </div>
+      <div class="form-group"><label>Preferences & notes</label><textarea id="nc-notes" placeholder="2bd/2ba, near schools, open to renting first, has a dog…" rows="3"></textarea></div>
+      <div class="form-group">
+        <label>Set up AI property alerts</label>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <button class="toggle on" id="alert-toggle" onclick="this.classList.toggle('on')"></button>
+          <span style="font-size:13px;color:var(--text2);">Notify me when new listings match this client's criteria</span>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('add-client-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="addClient()">Add client →</button>
+    </div>
+  </div>
+</div>
+
+<!-- Client detail modal -->
+<div class="modal-overlay" id="client-detail-modal">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div class="s-avatar" id="cd-avatar" style="width:40px;height:40px;font-size:16px;">SK</div>
+        <div><div id="cd-name" style="font-size:16px;font-weight:500;"></div><div id="cd-type" style="font-size:12px;color:var(--text3);"></div></div>
+      </div>
+      <span class="modal-close" onclick="closeModal('client-detail-modal')">×</span>
+    </div>
+    <div class="modal-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+        <div><div style="font-size:11px;color:var(--text3);margin-bottom:4px;">Budget</div><div id="cd-budget" style="font-size:14px;font-weight:500;color:var(--accent);"></div></div>
+        <div><div style="font-size:11px;color:var(--text3);margin-bottom:4px;">Stage</div><div id="cd-stage"></div></div>
+        <div><div style="font-size:11px;color:var(--text3);margin-bottom:4px;">Email</div><div id="cd-email" style="font-size:13px;color:var(--text2);"></div></div>
+        <div><div style="font-size:11px;color:var(--text3);margin-bottom:4px;">Phone</div><div id="cd-phone" style="font-size:13px;color:var(--text2);"></div></div>
+      </div>
+      <div style="margin-bottom:16px;"><div style="font-size:11px;color:var(--text3);margin-bottom:4px;">Preferences</div><div id="cd-notes" style="font-size:13px;color:var(--text2);"></div></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <a id="cd-search-btn" href="search.html" class="btn btn-primary btn-sm">✦ AI Search for this client</a>
+        <a href="chat.html" class="btn btn-ghost btn-sm">💬 Message</a>
+        <button class="btn btn-ghost btn-sm" onclick="scheduleForClient()">📅 Schedule showing</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../config.js"></script>
+<script src="../js/supabase-client.js"></script>
+<script src="../js/auth-guard.js"></script>
+<script src="../js/app.js"></script>
+<script>
+const CLIENTS = [
+  { id:1, first:'Sarah', last:'Kim', email:'sarah.kim@email.com', phone:'(608) 555-1234', type:'buyer', stage:'active', budget:'$350,000', area:'Madison, WI', notes:'2bd/2ba near schools, open to renting first, has a Labrador', matches:4, last_contact:'2026-04-03' },
+  { id:2, first:'Marcus', last:'Thompson', email:'marcus.t@email.com', phone:'(608) 555-5678', type:'buyer', stage:'offer', budget:'$500,000', area:'Madison, WI', notes:'3bd+, needs garage, prefers single family in suburbs', matches:3, last_contact:'2026-04-02' },
+  { id:3, first:'Priya', last:'Mehta', email:'priya.m@email.com', phone:'(608) 555-9012', type:'renter', stage:'active', budget:'$2,000/mo', area:'Madison, WI', notes:'Rental preferred, 2bd/2ba, modern kitchen, near campus', matches:3, last_contact:'2026-04-01' },
+  { id:4, first:'Jason', last:'Rodriguez', email:'jrodriguez@email.com', phone:'(608) 555-3456', type:'buyer', stage:'new', budget:'$420,000', area:'Middleton, WI', notes:'Young family, 4bd, good school district required', matches:2, last_contact:'2026-03-30' },
+  { id:5, first:'Amy', last:'Chen', email:'amy.chen@email.com', phone:'(608) 555-7890', type:'investor', stage:'active', budget:'$800,000', area:'Madison metro', notes:'Looking for multi-family or investment property, cap rate 5%+', matches:1, last_contact:'2026-03-28' },
+  { id:6, first:'David', last:'Park', email:'dpark@email.com', phone:'(608) 555-2345', type:'seller', stage:'closing', budget:'$389,000', area:'Madison, WI', notes:'Selling 5 Clearwater Court, needs 60-day close', matches:0, last_contact:'2026-04-03' },
+  { id:7, first:'Linda', last:'Foster', email:'lfoster@email.com', phone:'(608) 555-6789', type:'buyer', stage:'new', budget:'$250,000', area:'Sun Prairie, WI', notes:'First-time buyer, 2bd, low maintenance preferred', matches:5, last_contact:'2026-03-25' },
+];
+
+const stageMap = {
+  new:     { label:'New', color:'badge-blue' },
+  active:  { label:'Active', color:'badge-green' },
+  offer:   { label:'Offer', color:'badge-amber' },
+  closing: { label:'Closing', color:'badge-purple' },
+  closed:  { label:'Closed', color:'badge-gray' },
+};
+const typeLabel = { buyer:'Buyer', renter:'Renter', seller:'Seller', investor:'Investor' };
+
+let filtered = [...CLIENTS];
+
+// Render pipeline
+function renderPipeline() {
+  const stages = ['new','active','offer','closing'];
+  const el = document.getElementById('pipeline-view');
+  el.innerHTML = stages.map(s => {
+    const cols = filtered.filter(c => c.stage === s);
+    return `<div class="pipeline-col">
+      <div class="pipeline-col-header">
+        <span class="pipeline-col-title">${stageMap[s].label}</span>
+        <span class="pipeline-col-count">${cols.length}</span>
+      </div>
+      <div class="pipeline-cards">
+        ${cols.map(c => `
+          <div class="pipeline-card" onclick="openClient(${c.id})">
+            <div class="pipeline-card-name">${c.first} ${c.last}</div>
+            <div class="pipeline-card-sub">${typeLabel[c.type]||c.type} · ${c.area}</div>
+            <div class="pipeline-card-price">${c.budget}</div>
+            ${c.matches ? `<div style="font-size:10px;color:var(--accent);margin-top:4px;">✦ ${c.matches} AI matches</div>` : ''}
+          </div>`).join('')}
+        ${cols.length === 0 ? '<div style="font-size:12px;color:var(--text3);padding:4px;">No clients</div>' : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderTable() {
+  const el = document.getElementById('clients-tbody');
+  document.getElementById('clients-count').textContent = filtered.length + ' clients';
+  el.innerHTML = filtered.map(c => `<tr>
+    <td>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="width:30px;height:30px;border-radius:50%;background:var(--accent-dim);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--accent);flex-shrink:0;">${c.first[0]+c.last[0]}</div>
+        <div><div class="td-bold">${c.first} ${c.last}</div><div style="font-size:11px;color:var(--text3);">${c.email}</div></div>
+      </div>
+    </td>
+    <td>${typeLabel[c.type]||c.type}</td>
+    <td class="td-mono">${c.budget}</td>
+    <td><span class="badge ${stageMap[c.stage]?.color||'badge-gray'}">${stageMap[c.stage]?.label||c.stage}</span></td>
+    <td class="td-mono">${c.last_contact}</td>
+    <td>${c.matches ? `<span style="color:var(--accent);">✦ ${c.matches}</span>` : '—'}</td>
+    <td>
+      <div style="display:flex;gap:6px;">
+        <button class="btn btn-ghost btn-sm" onclick="openClient(${c.id})">View</button>
+        <a href="chat.html" class="btn btn-ghost btn-sm">Chat</a>
+      </div>
+    </td>
+  </tr>`).join('');
+}
+
+function filterClients() {
+  const q = document.getElementById('client-search').value.toLowerCase();
+  const s = document.getElementById('stage-filter').value;
+  filtered = CLIENTS.filter(c =>
+    (!q || (c.first+' '+c.last).toLowerCase().includes(q) || c.email.toLowerCase().includes(q)) &&
+    (!s || c.stage === s)
+  );
+  renderPipeline(); renderTable();
+}
+
+function openClient(id) {
+  const c = CLIENTS.find(x => x.id === id);
+  if (!c) return;
+  document.getElementById('cd-avatar').textContent = c.first[0]+c.last[0];
+  document.getElementById('cd-name').textContent = c.first+' '+c.last;
+  document.getElementById('cd-type').textContent = typeLabel[c.type]+' · '+c.area;
+  document.getElementById('cd-budget').textContent = c.budget;
+  document.getElementById('cd-stage').innerHTML = `<span class="badge ${stageMap[c.stage]?.color}">${stageMap[c.stage]?.label}</span>`;
+  document.getElementById('cd-email').textContent = c.email;
+  document.getElementById('cd-phone').textContent = c.phone;
+  document.getElementById('cd-notes').textContent = c.notes;
+  openModal('client-detail-modal');
+}
+
+function scheduleForClient() {
+  closeModal('client-detail-modal');
+  window.location.href = 'schedule.html?new=1';
+}
+
+function addClient() {
+  const first = document.getElementById('nc-first').value;
+  const last = document.getElementById('nc-last').value;
+  if (!first || !last) { toast('First and last name required.', 'warning'); return; }
+  CLIENTS.unshift({ id: Date.now(), first, last, email: document.getElementById('nc-email').value, phone: document.getElementById('nc-phone').value, type: document.getElementById('nc-clienttype').value, stage: document.getElementById('nc-stage').value, budget: document.getElementById('nc-budget').value, area: document.getElementById('nc-area').value, notes: document.getElementById('nc-notes').value, matches: 0, last_contact: new Date().toISOString().slice(0,10) });
+  filtered = [...CLIENTS];
+  renderPipeline(); renderTable();
+  closeModal('add-client-modal');
+  toast('Client added!', 'success');
+}
+
+filterClients();
+</script>
+</body>
+</html>

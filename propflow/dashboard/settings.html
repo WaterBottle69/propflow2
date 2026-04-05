@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Settings — PropFlow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="../css/main.css"/>
+<style>
+  .settings-layout { display:grid; grid-template-columns:220px 1fr; gap:24px; align-items:start; }
+  .settings-nav { background:var(--bg); border:1px solid var(--border); border-radius:var(--radius-md); overflow:hidden; position:sticky; top:80px; }
+  .settings-nav-item { display:flex; align-items:center; gap:10px; padding:12px 16px; font-size:13px; color:var(--text2); cursor:pointer; border-bottom:1px solid var(--border); transition:background .15s; }
+  .settings-nav-item:last-child { border-bottom:none; }
+  .settings-nav-item:hover { background:var(--bg2); }
+  .settings-nav-item.active { color:var(--accent); background:var(--accent-dim); }
+  .settings-section { display:none; }
+  .settings-section.active { display:block; }
+  .settings-card { background:var(--bg); border:1px solid var(--border); border-radius:var(--radius-md); margin-bottom:20px; overflow:hidden; }
+  .settings-card-header { padding:18px 24px; border-bottom:1px solid var(--border); }
+  .settings-card-title { font-size:15px; font-weight:600; color:var(--text); margin-bottom:2px; }
+  .settings-card-desc { font-size:12px; color:var(--text3); }
+  .settings-card-body { padding:24px; }
+  .form-row-2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .avatar-section { display:flex; align-items:center; gap:20px; margin-bottom:24px; }
+  .settings-avatar { width:72px; height:72px; border-radius:50%; background:var(--bg3); border:2px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:600; color:var(--text); flex-shrink:0; }
+  .avatar-actions { display:flex; flex-direction:column; gap:8px; }
+  .notif-row { display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-bottom:1px solid var(--border); }
+  .notif-row:last-child { border-bottom:none; }
+  .notif-label { font-size:14px; color:var(--text); }
+  .notif-desc { font-size:12px; color:var(--text3); margin-top:2px; }
+  .danger-item { display:flex; align-items:center; justify-content:space-between; padding:16px 24px; border-bottom:1px solid var(--border); }
+  .danger-item:last-child { border-bottom:none; }
+  .danger-title { font-size:14px; color:var(--text); font-weight:500; }
+  .danger-desc { font-size:12px; color:var(--text3); margin-top:2px; }
+  .badge-plan { display:inline-flex; align-items:center; gap:5px; font-size:11px; color:var(--accent); background:var(--accent-dim); border:1px solid rgba(74,222,128,.3); border-radius:20px; padding:2px 10px; }
+  @media(max-width:768px) { .settings-layout{grid-template-columns:1fr;} .settings-nav{position:static;} .form-row-2{grid-template-columns:1fr;} }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo">PropFlow<span class="dot">.</span></a>
+  <div class="nav-links">
+    <a href="search.html">AI Search</a>
+    <a href="listings.html">Listings</a>
+    <a href="clients.html">Clients</a>
+  </div>
+  <div style="display:flex;align-items:center;gap:14px;">
+    <div class="nav-bell" onclick="openModal('notifications-modal')">🔔<div class="nav-bell-dot"></div></div>
+    <div class="nav-avatar" onclick="openModal('user-menu-modal')">J</div>
+  </div>
+</nav>
+
+<div class="dash-layout">
+  <div class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Main</div>
+      <a href="index.html" class="sidebar-item"><span class="si-icon">⊞</span> Dashboard</a>
+      <a href="search.html" class="sidebar-item"><span class="si-icon">✦</span> AI Search</a>
+      <a href="listings.html" class="sidebar-item"><span class="si-icon">📋</span> My Listings</a>
+      <a href="clients.html" class="sidebar-item"><span class="si-icon">👥</span> Clients</a>
+      <a href="chat.html" class="sidebar-item"><span class="si-icon">💬</span> Messages</a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Tools</div>
+      <a href="schedule.html" class="sidebar-item"><span class="si-icon">📅</span> Schedule</a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Account</div>
+      <a href="integrations.html" class="sidebar-item"><span class="si-icon">🔗</span> Integrations</a>
+      <a href="team.html" class="sidebar-item leader-only"><span class="si-icon">🏢</span> Team</a>
+      <a href="billing.html" class="sidebar-item"><span class="si-icon">💳</span> Billing</a>
+      <a href="settings.html" class="sidebar-item active"><span class="si-icon">⚙️</span> Settings</a>
+    </div>
+    <div class="sidebar-user">
+      <div class="sidebar-user-inner">
+        <div class="s-avatar">J</div>
+        <div><div class="s-name">Jordan Mitchell</div><div class="s-role">Agent</div></div>
+        <a href="#" data-action="signout" style="margin-left:auto;font-size:18px;color:var(--text3);text-decoration:none;" title="Sign out">⏻</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="dash-main">
+    <div class="dash-ph" style="margin-bottom:24px;">
+      <div class="dash-ph-left">
+        <div class="eyebrow">Account</div>
+        <div class="page-title">Settings</div>
+      </div>
+    </div>
+
+    <div class="settings-layout">
+      <!-- Left nav -->
+      <div class="settings-nav">
+        <div class="settings-nav-item active" onclick="switchTab('profile', this)">
+          <span>👤</span> Profile
+        </div>
+        <div class="settings-nav-item" onclick="switchTab('password', this)">
+          <span>🔒</span> Password
+        </div>
+        <div class="settings-nav-item" onclick="switchTab('notifications', this)">
+          <span>🔔</span> Notifications
+        </div>
+        <div class="settings-nav-item" onclick="switchTab('account', this)">
+          <span>💳</span> Account
+        </div>
+        <div class="settings-nav-item" onclick="switchTab('danger', this)">
+          <span style="color:var(--red);">⚠️</span> <span style="color:var(--red);">Danger zone</span>
+        </div>
+      </div>
+
+      <!-- Right content -->
+      <div>
+
+        <!-- PROFILE TAB -->
+        <div class="settings-section active" id="tab-profile">
+          <div class="settings-card">
+            <div class="settings-card-header">
+              <div class="settings-card-title">Profile information</div>
+              <div class="settings-card-desc">This info is visible to your team and in shared reports.</div>
+            </div>
+            <div class="settings-card-body">
+              <div class="avatar-section">
+                <div class="settings-avatar" id="profile-avatar-display">J</div>
+                <div class="avatar-actions">
+                  <div style="font-size:13px;color:var(--text);" id="profile-name-display">Jordan Mitchell</div>
+                  <div style="font-size:11px;color:var(--text3);" id="profile-email-display">jordan@example.com</div>
+                  <span class="badge-plan" id="profile-plan-badge">✦ Pro Plan</span>
+                </div>
+              </div>
+              <form id="profile-form">
+                <div class="form-row-2">
+                  <div class="form-group">
+                    <label>First name</label>
+                    <input type="text" id="f-first" placeholder="Jordan"/>
+                  </div>
+                  <div class="form-group">
+                    <label>Last name</label>
+                    <input type="text" id="f-last" placeholder="Mitchell"/>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Email address</label>
+                  <input type="email" id="f-email" placeholder="jordan@brokerage.com" disabled style="opacity:.6;cursor:not-allowed;"/>
+                  <div style="font-size:11px;color:var(--text3);margin-top:4px;">Email changes require re-verification. <a href="#" onclick="changeEmail();return false;" style="color:var(--accent);">Change email →</a></div>
+                </div>
+                <div class="form-row-2">
+                  <div class="form-group">
+                    <label>Phone number</label>
+                    <input type="tel" id="f-phone" placeholder="+1 (555) 000-0000"/>
+                  </div>
+                  <div class="form-group">
+                    <label>License number</label>
+                    <input type="text" id="f-license" placeholder="RE-12345678"/>
+                  </div>
+                </div>
+                <div class="form-row-2">
+                  <div class="form-group">
+                    <label>Brokerage</label>
+                    <input type="text" id="f-brokerage" placeholder="Keller Williams, RE/MAX…"/>
+                  </div>
+                  <div class="form-group">
+                    <label>Role</label>
+                    <select id="f-role">
+                      <option value="agent">Agent</option>
+                      <option value="team_leader">Team Leader</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Bio</label>
+                  <textarea id="f-bio" rows="3" placeholder="Tell clients about yourself — your specialty, years of experience, markets you serve…"></textarea>
+                </div>
+                <div style="display:flex;justify-content:flex-end;gap:10px;">
+                  <button type="button" class="btn btn-ghost" onclick="loadProfile()">Discard changes</button>
+                  <button type="submit" class="btn btn-primary" id="save-profile-btn">Save profile →</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <!-- PASSWORD TAB -->
+        <div class="settings-section" id="tab-password">
+          <div class="settings-card">
+            <div class="settings-card-header">
+              <div class="settings-card-title">Change password</div>
+              <div class="settings-card-desc">Use a strong password you don't use elsewhere.</div>
+            </div>
+            <div class="settings-card-body">
+              <form id="password-form">
+                <div class="form-group">
+                  <label>Current password</label>
+                  <input type="password" id="f-current-pw" placeholder="Enter current password" autocomplete="current-password"/>
+                </div>
+                <div class="form-group">
+                  <label>New password</label>
+                  <input type="password" id="f-new-pw" placeholder="At least 8 characters" autocomplete="new-password" minlength="8"/>
+                </div>
+                <div class="form-group">
+                  <label>Confirm new password</label>
+                  <input type="password" id="f-confirm-pw" placeholder="Re-enter new password" autocomplete="new-password"/>
+                </div>
+                <div style="padding:12px;background:var(--bg3);border-radius:var(--radius-sm);margin-bottom:16px;font-size:12px;color:var(--text3);">
+                  Password must be at least 8 characters and include a mix of letters and numbers.
+                </div>
+                <div style="display:flex;justify-content:flex-end;">
+                  <button type="submit" class="btn btn-primary" id="save-pw-btn">Update password →</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <!-- NOTIFICATIONS TAB -->
+        <div class="settings-section" id="tab-notifications">
+          <div class="settings-card">
+            <div class="settings-card-header">
+              <div class="settings-card-title">Notification preferences</div>
+              <div class="settings-card-desc">Choose which email and in-app notifications you receive.</div>
+            </div>
+            <div class="settings-card-body" style="padding:0 24px;">
+              <div class="notif-row">
+                <div>
+                  <div class="notif-label">New lead assigned</div>
+                  <div class="notif-desc">When a new lead arrives from Zillow, Realtor.com, or your website.</div>
+                </div>
+                <button class="toggle on" id="notif-new-lead" onclick="this.classList.toggle('on'); saveNotifPrefs()"></button>
+              </div>
+              <div class="notif-row">
+                <div>
+                  <div class="notif-label">Price drop alert</div>
+                  <div class="notif-desc">When a saved search listing drops in price.</div>
+                </div>
+                <button class="toggle on" id="notif-price-drop" onclick="this.classList.toggle('on'); saveNotifPrefs()"></button>
+              </div>
+              <div class="notif-row">
+                <div>
+                  <div class="notif-label">Offer activity</div>
+                  <div class="notif-desc">When an offer is submitted, accepted, or countered on your listings.</div>
+                </div>
+                <button class="toggle on" id="notif-offer" onclick="this.classList.toggle('on'); saveNotifPrefs()"></button>
+              </div>
+              <div class="notif-row">
+                <div>
+                  <div class="notif-label">Client messages</div>
+                  <div class="notif-desc">When a client sends you a new message.</div>
+                </div>
+                <button class="toggle on" id="notif-message" onclick="this.classList.toggle('on'); saveNotifPrefs()"></button>
+              </div>
+              <div class="notif-row" style="border-bottom:none;">
+                <div>
+                  <div class="notif-label">Weekly performance report</div>
+                  <div class="notif-desc">A weekly summary of your leads, listings, and pipeline activity.</div>
+                </div>
+                <button class="toggle on" id="notif-weekly" onclick="this.classList.toggle('on'); saveNotifPrefs()"></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ACCOUNT TAB -->
+        <div class="settings-section" id="tab-account">
+          <div class="settings-card">
+            <div class="settings-card-header">
+              <div class="settings-card-title">Subscription & billing</div>
+              <div class="settings-card-desc">Manage your PropFlow plan.</div>
+            </div>
+            <div class="settings-card-body">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:14px;background:var(--bg3);border-radius:var(--radius-sm);margin-bottom:16px;">
+                <div>
+                  <div style="font-size:14px;font-weight:600;color:var(--text);" id="acct-plan-name">Pro Plan</div>
+                  <div style="font-size:12px;color:var(--text3);" id="acct-plan-status">Active · renews Jan 4, 2027</div>
+                </div>
+                <a href="billing.html" class="btn btn-ghost btn-sm">Manage →</a>
+              </div>
+              <div style="font-size:13px;color:var(--text3);">Need to change plans, update payment info, or cancel? Head to <a href="billing.html" style="color:var(--accent);">Billing →</a></div>
+            </div>
+          </div>
+
+          <div class="settings-card">
+            <div class="settings-card-header">
+              <div class="settings-card-title">Connected accounts</div>
+              <div class="settings-card-desc">External services linked to your PropFlow account.</div>
+            </div>
+            <div class="settings-card-body" style="padding:0 24px;" id="connected-accounts-list">
+              <div class="notif-row">
+                <div>
+                  <div class="notif-label">Google Calendar</div>
+                  <div class="notif-desc" id="gcal-status-text">Not connected</div>
+                </div>
+                <a href="integrations.html" class="btn btn-ghost btn-sm">Manage →</a>
+              </div>
+              <div class="notif-row">
+                <div>
+                  <div class="notif-label">Zillow Premier Agent</div>
+                  <div class="notif-desc" id="zillow-status-text">Not connected</div>
+                </div>
+                <a href="integrations.html" class="btn btn-ghost btn-sm">Manage →</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DANGER TAB -->
+        <div class="settings-section" id="tab-danger">
+          <div class="settings-card" style="border-color:rgba(248,113,113,.3);">
+            <div class="settings-card-header" style="border-color:rgba(248,113,113,.2);">
+              <div class="settings-card-title" style="color:var(--red);">Danger zone</div>
+              <div class="settings-card-desc">These actions are permanent and cannot be undone.</div>
+            </div>
+            <div style="padding:0;">
+              <div class="danger-item">
+                <div>
+                  <div class="danger-title">Export my data</div>
+                  <div class="danger-desc">Download a copy of all your PropFlow data — clients, listings, and messages.</div>
+                </div>
+                <button class="btn btn-ghost btn-sm" onclick="exportData()">Export data</button>
+              </div>
+              <div class="danger-item">
+                <div>
+                  <div class="danger-title">Sign out of all devices</div>
+                  <div class="danger-desc">Revokes all active sessions. You'll need to sign in again everywhere.</div>
+                </div>
+                <button class="btn btn-ghost btn-sm" onclick="signOutAll()">Sign out all</button>
+              </div>
+              <div class="danger-item">
+                <div>
+                  <div class="danger-title" style="color:var(--red);">Delete account</div>
+                  <div class="danger-desc">Permanently delete your account, all listings, clients, and data. This cannot be reversed.</div>
+                </div>
+                <button class="btn btn-sm" style="background:rgba(248,113,113,.1);color:var(--red);border:1px solid rgba(248,113,113,.3);" onclick="confirmDeleteAccount()">Delete account</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Delete account confirm modal -->
+<div class="modal-overlay" id="delete-confirm-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 style="color:var(--red);">Delete account</h3>
+      <span class="modal-close" onclick="closeModal('delete-confirm-modal')">×</span>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:14px;color:var(--text2);margin-bottom:16px;">This will permanently delete your account and all associated data including clients, listings, messages, and billing history. This action <strong>cannot be undone</strong>.</p>
+      <div class="form-group">
+        <label>Type <strong>DELETE</strong> to confirm</label>
+        <input type="text" id="delete-confirm-input" placeholder="DELETE"/>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('delete-confirm-modal')">Cancel</button>
+      <button class="btn btn-sm" style="background:var(--red);color:#fff;" onclick="deleteAccount()">Delete my account</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../config.js"></script>
+<script src="../js/supabase-client.js"></script>
+<script src="../js/auth-guard.js"></script>
+<script src="../js/app.js"></script>
+<script>
+const sb = window.supabaseClient;
+
+// ── Tab switching ────────────────────────────────────────────────────────────
+function switchTab(name, el) {
+  document.querySelectorAll('.settings-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.settings-nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  el.classList.add('active');
+}
+
+// ── Load profile ─────────────────────────────────────────────────────────────
+async function loadProfile() {
+  const profile = window.currentProfile;
+  if (!profile) return;
+
+  const nameParts = (profile.full_name || '').split(' ');
+  document.getElementById('f-first').value    = nameParts[0] || '';
+  document.getElementById('f-last').value     = nameParts.slice(1).join(' ') || '';
+  document.getElementById('f-email').value    = profile.email || window.currentUser?.email || '';
+  document.getElementById('f-phone').value    = profile.phone || '';
+  document.getElementById('f-license').value  = profile.license_number || '';
+  document.getElementById('f-brokerage').value= profile.brokerage || '';
+  document.getElementById('f-role').value     = profile.role || 'agent';
+  document.getElementById('f-bio').value      = profile.bio || '';
+
+  // Avatar initials
+  const initials = (profile.full_name || profile.email || '?').split(/[\s@]/);
+  const av = (initials[0][0] + (initials[1] ? initials[1][0] : '')).toUpperCase();
+  document.getElementById('profile-avatar-display').textContent = av;
+  document.getElementById('profile-name-display').textContent   = profile.full_name || profile.email || 'You';
+  document.getElementById('profile-email-display').textContent  = profile.email || window.currentUser?.email || '';
+
+  const plan = profile.subscription_plan || 'starter';
+  document.getElementById('profile-plan-badge').textContent = '✦ ' + plan.charAt(0).toUpperCase() + plan.slice(1) + ' Plan';
+  document.getElementById('acct-plan-name').textContent     = plan.charAt(0).toUpperCase() + plan.slice(1) + ' Plan';
+
+  const status = profile.subscription_status || 'trial';
+  document.getElementById('acct-plan-status').textContent = status === 'trial'
+    ? 'Free trial · ' + Math.max(0, Math.ceil((new Date(profile.trial_ends_at) - Date.now()) / 86400000)) + ' days left'
+    : status.charAt(0).toUpperCase() + status.slice(1);
+
+  // Notification prefs
+  setToggle('notif-new-lead',   profile.notif_new_lead !== false);
+  setToggle('notif-price-drop', profile.notif_price_drop !== false);
+  setToggle('notif-offer',      profile.notif_offer !== false);
+  setToggle('notif-message',    profile.notif_message !== false);
+  setToggle('notif-weekly',     profile.notif_weekly_report !== false);
+}
+
+function setToggle(id, on) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  on ? el.classList.add('on') : el.classList.remove('on');
+}
+
+// ── Save profile ─────────────────────────────────────────────────────────────
+document.getElementById('profile-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('save-profile-btn');
+  setLoading(btn, true);
+
+  const first = document.getElementById('f-first').value.trim();
+  const last  = document.getElementById('f-last').value.trim();
+  const updates = {
+    full_name:      [first, last].filter(Boolean).join(' '),
+    phone:          document.getElementById('f-phone').value.trim() || null,
+    license_number: document.getElementById('f-license').value.trim() || null,
+    brokerage:      document.getElementById('f-brokerage').value.trim() || null,
+    role:           document.getElementById('f-role').value,
+    bio:            document.getElementById('f-bio').value.trim() || null,
+  };
+
+  if (sb && window.currentUser) {
+    const { error } = await sb.from('profiles').update(updates).eq('id', window.currentUser.id);
+    if (error) { toast('Error saving profile: ' + error.message, 'error'); setLoading(btn, false); return; }
+    window.currentProfile = { ...window.currentProfile, ...updates };
+  } else {
+    // Demo mode — save to localStorage
+    const demo = JSON.parse(localStorage.getItem('propflow_demo_user') || '{}');
+    localStorage.setItem('propflow_demo_user', JSON.stringify({ ...demo, ...updates }));
+  }
+
+  setLoading(btn, false);
+  toast('Profile saved!', 'success');
+
+  // Update sidebar live
+  document.querySelectorAll('.s-name').forEach(el => el.textContent = updates.full_name || 'You');
+  document.getElementById('profile-name-display').textContent = updates.full_name || 'You';
+});
+
+// ── Change password ──────────────────────────────────────────────────────────
+document.getElementById('password-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('save-pw-btn');
+  const newPw = document.getElementById('f-new-pw').value;
+  const confirmPw = document.getElementById('f-confirm-pw').value;
+
+  if (newPw.length < 8) { toast('Password must be at least 8 characters.', 'warning'); return; }
+  if (newPw !== confirmPw) { toast('Passwords do not match.', 'warning'); return; }
+
+  if (!sb) { toast('Password changes require a live Supabase connection.', 'info'); return; }
+
+  setLoading(btn, true);
+  const { error } = await sb.auth.updateUser({ password: newPw });
+  setLoading(btn, false);
+
+  if (error) { toast('Error: ' + error.message, 'error'); return; }
+  toast('Password updated successfully!', 'success');
+  document.getElementById('password-form').reset();
+});
+
+// ── Save notification prefs ──────────────────────────────────────────────────
+async function saveNotifPrefs() {
+  const updates = {
+    notif_new_lead:      document.getElementById('notif-new-lead').classList.contains('on'),
+    notif_price_drop:    document.getElementById('notif-price-drop').classList.contains('on'),
+    notif_offer:         document.getElementById('notif-offer').classList.contains('on'),
+    notif_message:       document.getElementById('notif-message').classList.contains('on'),
+    notif_weekly_report: document.getElementById('notif-weekly').classList.contains('on'),
+  };
+
+  if (sb && window.currentUser) {
+    await sb.from('profiles').update(updates).eq('id', window.currentUser.id);
+  }
+  toast('Notification preferences saved.', 'success');
+}
+
+// ── Email change ─────────────────────────────────────────────────────────────
+async function changeEmail() {
+  const newEmail = prompt('Enter your new email address:');
+  if (!newEmail || !newEmail.includes('@')) return;
+  if (!sb) { toast('Email changes require a live Supabase connection.', 'info'); return; }
+
+  const { error } = await sb.auth.updateUser({ email: newEmail });
+  if (error) { toast('Error: ' + error.message, 'error'); return; }
+  toast('Confirmation sent to ' + newEmail + '. Check your inbox to verify.', 'success');
+}
+
+// ── Connected accounts status ────────────────────────────────────────────────
+function loadConnectedAccounts() {
+  const ints = JSON.parse(localStorage.getItem('pf_integrations') || '{}');
+  document.getElementById('gcal-status-text').textContent   = ints.google  ? 'Connected ✓' : 'Not connected';
+  document.getElementById('zillow-status-text').textContent = ints.zillow  ? 'Connected ✓' : 'Not connected';
+}
+
+// ── Export data ───────────────────────────────────────────────────────────────
+async function exportData() {
+  toast('Preparing your data export…', 'info');
+  const data = { profile: window.currentProfile || {}, exported_at: new Date().toISOString() };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url; a.download = 'propflow-export.json'; a.click();
+  URL.revokeObjectURL(url);
+  toast('Export downloaded!', 'success');
+}
+
+// ── Sign out all ──────────────────────────────────────────────────────────────
+async function signOutAll() {
+  if (!confirm('Sign out of all devices?')) return;
+  if (sb) {
+    await sb.auth.signOut({ scope: 'global' });
+  }
+  localStorage.clear();
+  window.location.href = '/auth/login.html';
+}
+
+// ── Delete account ────────────────────────────────────────────────────────────
+function confirmDeleteAccount() {
+  openModal('delete-confirm-modal');
+}
+
+async function deleteAccount() {
+  if (document.getElementById('delete-confirm-input').value !== 'DELETE') {
+    toast('Type DELETE to confirm.', 'warning');
+    return;
+  }
+  toast('Deleting account…', 'info');
+
+  if (sb && window.currentUser) {
+    // Delete from profiles (cascades to all user data via RLS + ON DELETE CASCADE)
+    await sb.from('profiles').delete().eq('id', window.currentUser.id);
+    await sb.auth.signOut();
+  }
+
+  localStorage.clear();
+  toast('Account deleted. Redirecting…', 'info');
+  setTimeout(() => window.location.href = '/', 1500);
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+// Wait for auth-guard to load the profile, then populate
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    loadProfile();
+    loadConnectedAccounts();
+  }, 300);
+});
+</script>
+</body>
+</html>

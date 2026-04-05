@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AI Search — PropFlow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="../css/main.css"/>
+<style>
+/* ── AI Search — centered input layout ── */
+.search-hero {
+  padding: 32px 0 24px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 24px;
+}
+.search-hero-inner {
+  max-width: 720px; margin: 0 auto; padding: 0 24px;
+}
+.search-eyebrow {
+  font-size: 10px; font-weight: 700; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--text3); margin-bottom: 6px;
+  display: flex; align-items: center; gap: 6px;
+}
+.search-title {
+  font-family: 'Instrument Serif', serif;
+  font-size: 30px; color: var(--text); margin-bottom: 20px;
+  letter-spacing: -.01em; line-height: 1.1;
+}
+.search-input-box {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  transition: border-color .2s, box-shadow .2s;
+  overflow: hidden;
+}
+.search-input-box:focus-within {
+  border-color: rgba(74,222,128,.35);
+  box-shadow: 0 0 0 3px rgba(74,222,128,.06);
+}
+.search-input-top {
+  display: flex; gap: 10px; align-items: center;
+  padding: 14px 16px; border-bottom: 1px solid var(--border);
+}
+.search-client-select {
+  font-size: 12px; color: var(--text3); background: var(--bg3);
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  padding: 5px 10px; min-width: 180px;
+}
+.search-loc { font-size: 11px; color: var(--text3); margin-left: auto; white-space: nowrap; }
+.search-textarea {
+  width: 100%; padding: 16px 18px;
+  background: transparent; border: none;
+  color: var(--text); font-size: 15px; line-height: 1.65;
+  resize: none; min-height: 80px; outline: none;
+}
+.search-textarea::placeholder { color: var(--text3); }
+.search-input-bottom {
+  display: flex; align-items: center; gap: 8px;
+  padding: 12px 14px; background: var(--bg3);
+  border-top: 1px solid var(--border);
+}
+.search-chips { display: flex; gap: 6px; flex-wrap: wrap; flex: 1; }
+.chip { padding: 5px 11px; border-radius: 100px; background: var(--surface); border: 1px solid var(--border); font-size: 11px; color: var(--text3); cursor: pointer; transition: all .15s; }
+.chip:hover { color: var(--text2); border-color: var(--border2); background: var(--bg2); }
+.btn-search-go {
+  padding: 9px 22px; border-radius: var(--radius-sm);
+  background: var(--accent); color: #0b1a10;
+  font-size: 13px; font-weight: 600; border: none; cursor: pointer;
+  transition: all .18s; white-space: nowrap;
+  display: flex; align-items: center; gap: 7px; flex-shrink: 0;
+}
+.btn-search-go:hover { background: var(--accent2); }
+.btn-search-go:disabled { opacity: .45; cursor: not-allowed; }
+
+/* Advanced filters toggle */
+.adv-toggle {
+  font-size: 11px; color: var(--text3); cursor: pointer; padding: 5px 8px;
+  border-radius: var(--radius-sm); transition: all .15s; white-space: nowrap;
+  display: flex; align-items: center; gap: 4px;
+}
+.adv-toggle:hover { color: var(--text2); background: var(--surface); }
+.adv-filters {
+  max-height: 0; overflow: hidden;
+  transition: max-height .3s cubic-bezier(.16,1,.3,1);
+  border-top: 1px solid transparent;
+}
+.adv-filters.open {
+  max-height: 140px;
+  border-top-color: var(--border);
+}
+.adv-filters-inner {
+  display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px;
+  padding: 14px 16px;
+}
+
+/* Results layout */
+.results-layout {
+  display: grid; grid-template-columns: 1fr 268px; gap: 20px;
+  align-items: start;
+}
+
+/* Loading bar (horizontal) */
+.search-loading {
+  display: none; padding: 20px 0; text-align: center;
+}
+.search-loading.active { display: block; }
+.search-loading-bar {
+  height: 2px; background: var(--border); border-radius: 1px;
+  overflow: hidden; max-width: 320px; margin: 0 auto 12px;
+}
+.search-loading-bar-fill {
+  height: 100%; background: var(--accent);
+  animation: loadingFill 1.8s ease infinite;
+  transform-origin: left;
+}
+@keyframes loadingFill {
+  0% { width: 0%; }
+  60% { width: 85%; }
+  100% { width: 100%; }
+}
+.search-loading-text { font-size: 13px; color: var(--text3); }
+
+/* Results area */
+.results-section { display: none; }
+.results-section.visible { display: block; }
+.results-intro-box {
+  padding: 12px 16px;
+  background: rgba(74,222,128,.04); border: 1px solid rgba(74,222,128,.15);
+  border-radius: var(--radius-sm); font-size: 13px; color: var(--text2); line-height: 1.65;
+  margin-bottom: 14px; border-left: 2px solid var(--accent);
+}
+.market-ctx-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+  padding: 14px 16px;
+  background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius-sm);
+  margin-bottom: 14px;
+}
+.mctx-item-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 4px; font-weight: 600; }
+.mctx-item-val { font-size: 15px; font-weight: 600; color: var(--text); }
+.mctx-item-val.green { color: var(--accent); }
+
+/* Empty / welcome state */
+.search-welcome {
+  text-align: center; padding: 48px 24px;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+.search-welcome-icon {
+  font-size: 36px; margin-bottom: 16px; opacity: .5;
+}
+.search-welcome h3 { font-family: 'Instrument Serif', serif; font-size: 20px; color: var(--text); margin-bottom: 8px; }
+.search-welcome p { font-size: 13px; color: var(--text3); line-height: 1.65; max-width: 320px; margin: 0 auto; }
+
+/* Listing card v2 */
+.result-card {
+  display: flex; gap: 14px; padding: 16px;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius); margin-bottom: 10px;
+  transition: border-color .2s, background .2s; cursor: pointer;
+}
+.result-card:hover { border-color: rgba(74,222,128,.2); background: rgba(74,222,128,.02); }
+.result-rank {
+  width: 28px; height: 28px; border-radius: 8px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; font-family: 'DM Mono', monospace;
+  background: var(--accent-dim); color: var(--accent); border: 1px solid rgba(74,222,128,.2);
+  margin-top: 2px;
+}
+.result-rank.top { background: rgba(240,192,96,.1); color: var(--gold); border-color: rgba(240,192,96,.2); }
+.result-thumb {
+  width: 72px; height: 72px; border-radius: var(--radius-sm);
+  background: var(--surface); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px; border: 1px solid var(--border);
+}
+.result-body { flex: 1; min-width: 0; }
+.result-head {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 3px;
+}
+.result-addr { font-size: 14px; font-weight: 500; color: var(--text); }
+.result-price { font-size: 15px; font-weight: 600; color: var(--accent); white-space: nowrap; }
+.result-detail { font-size: 12px; color: var(--text3); margin-bottom: 8px; }
+.result-score-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.result-score-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: .06em; font-weight: 600; }
+.score-bar-wrap { flex: 1; height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; max-width: 100px; }
+.score-bar { height: 100%; background: var(--accent); border-radius: 2px; transition: width .6s ease; }
+.result-score-val { font-size: 12px; font-weight: 700; color: var(--accent); }
+.result-actions { display: flex; gap: 6px; }
+
+/* Sidebar panels */
+.side-panel { margin-bottom: 14px; }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="../index.html" class="nav-logo">PropFlow<span class="dot">.</span></a>
+  <div class="nav-links">
+    <a href="index.html">Dashboard</a>
+    <a href="listings.html">Listings</a>
+    <a href="clients.html">Clients</a>
+    <a href="schedule.html">Schedule</a>
+  </div>
+  <div style="display:flex;align-items:center;gap:14px;">
+    <div class="nav-bell" onclick="openModal('notifications-modal')">🔔<div class="nav-bell-dot"></div></div>
+    <div class="nav-avatar" onclick="openModal('user-menu-modal')">J</div>
+  </div>
+</nav>
+
+<div class="dash-layout">
+  <div class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Main</div>
+      <a href="index.html" class="sidebar-item"><span class="si-icon">⊞</span> Dashboard</a>
+      <a href="search.html" class="sidebar-item active"><span class="si-icon">✦</span> AI Search</a>
+      <a href="listings.html" class="sidebar-item"><span class="si-icon">◫</span> My Listings <span class="sidebar-badge">7</span></a>
+      <a href="clients.html" class="sidebar-item"><span class="si-icon">◎</span> Clients <span class="sidebar-badge">12</span></a>
+      <a href="chat.html" class="sidebar-item"><span class="si-icon">◷</span> Messages <span class="sidebar-badge red">3</span></a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Tools</div>
+      <a href="schedule.html" class="sidebar-item"><span class="si-icon">▦</span> Schedule</a>
+      <a href="integrations.html" class="sidebar-item"><span class="si-icon">⊕</span> Integrations</a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Account</div>
+      <a href="team.html" class="sidebar-item leader-only"><span class="si-icon">◈</span> Team</a>
+      <a href="billing.html" class="sidebar-item"><span class="si-icon">◌</span> Billing</a>
+      <a href="settings.html" class="sidebar-item"><span class="si-icon">◉</span> Settings</a>
+    </div>
+    <div class="sidebar-user">
+      <div class="sidebar-user-inner">
+        <div class="s-avatar">J</div>
+        <div><div class="s-name">Jordan Mitchell</div><div class="s-role">Agent</div></div>
+        <a href="#" data-action="signout" style="margin-left:auto;font-size:16px;color:var(--text3);text-decoration:none;" title="Sign out">⏻</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="dash-main" style="max-height:calc(100vh - var(--nav-h));overflow-y:auto;">
+
+    <!-- Search hero / input -->
+    <div class="search-hero">
+      <div class="search-hero-inner">
+        <div class="search-eyebrow">
+          <div class="ai-dot" style="animation:pulse 2s infinite;"></div>
+          AI-Powered · Zillow + Realtor.com + MLS
+        </div>
+        <div class="search-title">What is your client looking for?</div>
+
+        <div class="search-input-box">
+          <!-- Top row: client selector + location -->
+          <div class="search-input-top">
+            <label style="font-size:11px;color:var(--text3);font-weight:600;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;">For:</label>
+            <select class="search-client-select" id="client-select">
+              <option value="">No client — general search</option>
+              <option value="sarah">Sarah K. — $350k, 2bd/2ba</option>
+              <option value="marcus">Marcus T. — $500k, 3bd+</option>
+              <option value="priya">Priya M. — Rental $2k/mo</option>
+            </select>
+            <span class="search-loc" id="loc-label">📍 Location: detecting…</span>
+            <span class="adv-toggle" onclick="toggleAdvanced(this)">⚙ Filters</span>
+          </div>
+
+          <!-- Advanced filters (collapsed by default) -->
+          <div class="adv-filters" id="adv-filters">
+            <div class="adv-filters-inner">
+              <div>
+                <label>Type</label>
+                <select id="f-type">
+                  <option value="">Any</option>
+                  <option value="sale">For Sale</option>
+                  <option value="rent">For Rent</option>
+                  <option value="new">New Construction</option>
+                </select>
+              </div>
+              <div>
+                <label>Max price</label>
+                <select id="f-price">
+                  <option value="">Any</option>
+                  <option value="200000">Up to $200k</option>
+                  <option value="300000">Up to $300k</option>
+                  <option value="400000">Up to $400k</option>
+                  <option value="500000">Up to $500k</option>
+                  <option value="750000">Up to $750k</option>
+                  <option value="1000000">Up to $1M</option>
+                </select>
+              </div>
+              <div>
+                <label>Min beds</label>
+                <select id="f-beds">
+                  <option value="">Any</option>
+                  <option value="1">1+</option>
+                  <option value="2">2+</option>
+                  <option value="3">3+</option>
+                  <option value="4">4+</option>
+                </select>
+              </div>
+              <div>
+                <label>Min baths</label>
+                <select id="f-baths">
+                  <option value="">Any</option>
+                  <option value="1">1+</option>
+                  <option value="2">2+</option>
+                  <option value="3">3+</option>
+                </select>
+              </div>
+              <div>
+                <label>School score</label>
+                <select id="f-school">
+                  <option value="">Any</option>
+                  <option value="7">7+/10</option>
+                  <option value="8">8+/10</option>
+                  <option value="9">9+/10</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Main textarea -->
+          <textarea class="search-textarea" id="main-prompt" rows="3" placeholder="Describe what your client needs — beds, baths, budget, neighborhood, school district, commute, lifestyle…"></textarea>
+
+          <!-- Bottom: chips + button -->
+          <div class="search-input-bottom">
+            <div class="search-chips">
+              <div class="chip" onclick="useChip('2 bed 2 bath under $350k near top schools')">2bd/2ba + schools</div>
+              <div class="chip" onclick="useChip('3 bedroom single family with garage')">3bd + garage</div>
+              <div class="chip" onclick="useChip('rental under $2000 pet friendly')">Pet-friendly rental</div>
+              <div class="chip" onclick="useChip('investment property cap rate above 5%')">Investment</div>
+              <div class="chip" onclick="useChip('new construction move-in ready')">New construction</div>
+            </div>
+            <button class="btn-search-go" id="search-btn" onclick="runFullSearch()">
+              <span>Search</span>
+              <span>✦</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results area -->
+    <div class="results-layout">
+
+      <!-- Left — results -->
+      <div>
+        <!-- Loading -->
+        <div class="search-loading" id="loading">
+          <div class="search-loading-bar"><div class="search-loading-bar-fill"></div></div>
+          <div class="search-loading-text" id="loading-text">Searching Zillow, Realtor.com and MLS…</div>
+        </div>
+
+        <!-- Welcome state (shown before first search) -->
+        <div class="search-welcome" id="welcome-state">
+          <div class="search-welcome-icon">✦</div>
+          <h3>PropFlow AI Search</h3>
+          <p>Describe your client's needs in plain English and get ranked, scored results from Zillow, Realtor.com, and your local MLS — with live market context.</p>
+        </div>
+
+        <!-- Results -->
+        <div class="results-section" id="results">
+          <div class="results-intro-box" id="results-intro"></div>
+          <div id="market-ctx" style="display:none; margin-bottom:14px;">
+            <div style="font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;padding:0 2px;">Market Context</div>
+            <div class="market-ctx-grid" id="mctx-content"></div>
+          </div>
+          <div id="results-list"></div>
+          <div style="padding:12px 0;display:flex;gap:8px;border-top:1px solid var(--border);margin-top:6px;">
+            <button class="btn btn-ghost btn-sm" onclick="saveSearch()">Save search</button>
+            <button class="btn btn-ghost btn-sm" onclick="exportResults()">Export CSV</button>
+            <button class="btn btn-ghost btn-sm" onclick="openModal('share-modal')">Share with client</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right sidebar -->
+      <div>
+        <!-- Saved searches -->
+        <div class="card side-panel">
+          <div class="card-header"><span class="card-title">Saved searches</span><span class="card-action" onclick="clearSaved()">Clear</span></div>
+          <div class="card-body" id="saved-list">
+            <div style="font-size:12px;color:var(--text3);">No saved searches yet.</div>
+          </div>
+        </div>
+
+        <!-- Recent -->
+        <div class="card side-panel">
+          <div class="card-header"><span class="card-title">Recent searches</span></div>
+          <div class="card-body" id="recent-list">
+            <div style="font-size:12px;color:var(--text3);">Your last 5 searches will appear here.</div>
+          </div>
+        </div>
+
+        <!-- Market stats -->
+        <div class="card side-panel">
+          <div class="card-header"><span class="card-title">Market overview</span><span style="font-size:11px;color:var(--text3);" id="stats-loc">Your area</span></div>
+          <div class="card-body" style="padding:4px 20px;">
+            <div class="market-row"><span class="market-label">Median price</span><span class="market-val market-up">$412k ↑</span></div>
+            <div class="market-row"><span class="market-label">Avg DOM</span><span class="market-val market-down">18d ↓</span></div>
+            <div class="market-row"><span class="market-label">Inventory</span><span class="market-val">284 homes</span></div>
+            <div class="market-row"><span class="market-label">List/sale</span><span class="market-val market-up">103% ↑</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Share modal -->
+<div class="modal-overlay" id="share-modal">
+  <div class="modal">
+    <div class="modal-header"><h3>Share results with client</h3><span class="modal-close" onclick="closeModal('share-modal')">×</span></div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Select client</label>
+        <select id="share-client">
+          <option value="sarah">Sarah K. (sarah@email.com)</option>
+          <option value="marcus">Marcus T. (marcus@email.com)</option>
+          <option value="priya">Priya M. (priya@email.com)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Message (optional)</label>
+        <textarea id="share-message" placeholder="Hi Sarah, here are the top matches I found for you…" rows="3"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('share-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="doShare()">Send to client →</button>
+    </div>
+  </div>
+</div>
+
+<!-- User Menu Modal -->
+<div class="modal-overlay" id="user-menu-modal">
+  <div class="modal" style="max-width:280px;">
+    <div class="modal-body" style="padding:16px;">
+      <div style="display:flex;align-items:center;gap:12px;padding-bottom:14px;border-bottom:1px solid var(--border);margin-bottom:12px;">
+        <div class="s-avatar" style="width:40px;height:40px;font-size:16px;">J</div>
+        <div><div class="s-name" style="font-size:14px;">Jordan Mitchell</div><div class="s-role">Agent · Pro plan</div></div>
+      </div>
+      <a href="settings.html" class="sidebar-item">⚙ Account settings</a>
+      <a href="billing.html" class="sidebar-item">◌ Billing &amp; plan</a>
+      <div class="divider"></div>
+      <div class="sidebar-item" data-action="signout" style="color:var(--red);cursor:pointer;">↪ Sign out</div>
+    </div>
+  </div>
+</div>
+
+<!-- Notifications Modal -->
+<div class="modal-overlay" id="notifications-modal">
+  <div class="modal">
+    <div class="modal-header"><h3>Notifications</h3><span class="modal-close" onclick="closeModal('notifications-modal')">×</span></div>
+    <div class="modal-body">
+      <div style="font-size:13px;color:var(--text2);line-height:1.8;">
+        <div style="padding:10px 0;border-bottom:1px solid var(--border);color:var(--red);">● &nbsp;Offer on 124 Elm St expires in 2 hours</div>
+        <div style="padding:10px 0;border-bottom:1px solid var(--border);color:var(--accent);">● &nbsp;New match for Sarah K. — 88 Oak Ave</div>
+        <div style="padding:10px 0;color:var(--amber);">● &nbsp;Price drop: 210 Birchwood → $344,500</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../config.js"></script>
+<script src="../js/supabase-client.js"></script>
+<script src="../js/auth-guard.js"></script>
+<script src="../js/app.js"></script>
+<script>
+// ── Location ──────────────────────────────────────────────────────────────
+if (typeof requestLocation === 'function') {
+  requestLocation().then(loc => {
+    const label = loc ? loc.lat.toFixed(3) + '°N, ' + Math.abs(loc.lng).toFixed(3) + '°W' : 'Location not set';
+    document.getElementById('loc-label').textContent = '📍 ' + label;
+    document.getElementById('stats-loc').textContent = label;
+  });
+}
+
+// ── Filters toggle ─────────────────────────────────────────────────────────
+function toggleAdvanced(btn) {
+  const el = document.getElementById('adv-filters');
+  el.classList.toggle('open');
+  btn.textContent = el.classList.contains('open') ? '✕ Close' : '⚙ Filters';
+}
+
+// ── Chip shortcuts ─────────────────────────────────────────────────────────
+function useChip(text) {
+  document.getElementById('main-prompt').value = text;
+  document.getElementById('main-prompt').focus();
+}
+
+// ── Saved + recent searches ────────────────────────────────────────────────
+let savedSearches = JSON.parse(localStorage.getItem('pf_saved_searches') || '[]');
+let recentSearches = JSON.parse(localStorage.getItem('pf_recent_searches') || '[]');
+let lastResults = null;
+renderSaved(); renderRecent();
+
+function renderSaved() {
+  const el = document.getElementById('saved-list');
+  if (!savedSearches.length) { el.innerHTML = '<div style="font-size:12px;color:var(--text3);">No saved searches yet.</div>'; return; }
+  el.innerHTML = savedSearches.map((s, i) => `
+    <div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);cursor:pointer;" onclick="loadSaved(${i})">
+      <span style="font-size:12px;color:var(--text2);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${s}</span>
+      <span style="font-size:11px;color:var(--text3);">→</span>
+    </div>`).join('');
+}
+
+function renderRecent() {
+  const el = document.getElementById('recent-list');
+  if (!recentSearches.length) { el.innerHTML = '<div style="font-size:12px;color:var(--text3);">Your last 5 searches appear here.</div>'; return; }
+  el.innerHTML = recentSearches.slice(-5).reverse().map((s, i) => `
+    <div style="font-size:12px;color:var(--text3);padding:6px 0;border-bottom:1px solid var(--border);cursor:pointer;" onclick="useChip('${s.replace(/'/g,"\\'")}')">
+      ${s.length > 52 ? s.slice(0, 52) + '…' : s}
+    </div>`).join('');
+}
+
+function loadSaved(i) { useChip(savedSearches[i]); }
+
+function clearSaved() {
+  savedSearches = [];
+  localStorage.removeItem('pf_saved_searches');
+  renderSaved();
+  toast('Saved searches cleared.', 'info');
+}
+
+function saveSearch() {
+  const prompt = document.getElementById('main-prompt').value.trim();
+  if (!prompt) return;
+  if (!savedSearches.includes(prompt)) {
+    savedSearches.push(prompt);
+    localStorage.setItem('pf_saved_searches', JSON.stringify(savedSearches));
+    renderSaved();
+    toast('Search saved!', 'success');
+  } else {
+    toast('Already saved.', 'info');
+  }
+}
+
+function exportResults() {
+  if (!lastResults) { toast('Run a search first.', 'warning'); return; }
+  const rows = [['Address', 'Price', 'Type', 'Detail', 'Score']];
+  (lastResults.listings || []).forEach(l => {
+    rows.push([l.addr, l.price_display || l.price, l.type, l.detail, l.score]);
+  });
+  const csv = rows.map(r => r.map(c => `"${c}"`).join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+  a.download = 'propflow-results.csv';
+  a.click();
+  toast('Exported to CSV.', 'success');
+}
+
+function doShare() {
+  toast('Results shared with client!', 'success');
+  closeModal('share-modal');
+}
+
+// ── Main search ────────────────────────────────────────────────────────────
+const clientMeta = {
+  sarah:  { name: 'Sarah K.', budget: '$350,000', type: 'buyer', notes: '2bd/2ba, near schools' },
+  marcus: { name: 'Marcus T.', budget: '$500,000', type: 'buyer', notes: '3bd+' },
+  priya:  { name: 'Priya M.', budget: '$2,000/mo', type: 'renter', notes: 'Rental preferred' },
+};
+
+async function runFullSearch() {
+  const prompt = document.getElementById('main-prompt').value.trim();
+  const clientId = document.getElementById('client-select').value;
+
+  if (!prompt && !clientId) {
+    toast('Describe what you\'re searching for.', 'warning');
+    document.getElementById('main-prompt').focus();
+    return;
+  }
+
+  // Build full prompt from filters
+  const fullPrompt = [
+    prompt,
+    document.getElementById('f-type').value === 'sale' ? 'for sale' :
+    document.getElementById('f-type').value === 'rent' ? 'for rent' :
+    document.getElementById('f-type').value || '',
+    document.getElementById('f-price').value ? 'under $' + parseInt(document.getElementById('f-price').value).toLocaleString() : '',
+    document.getElementById('f-beds').value ? document.getElementById('f-beds').value + '+ bedrooms' : '',
+    document.getElementById('f-baths').value ? document.getElementById('f-baths').value + '+ baths' : '',
+    document.getElementById('f-school').value ? 'school score ' + document.getElementById('f-school').value + '+' : '',
+  ].filter(Boolean).join(', ');
+
+  // Track recent
+  if (prompt) {
+    recentSearches.push(prompt);
+    localStorage.setItem('pf_recent_searches', JSON.stringify(recentSearches.slice(-10)));
+    renderRecent();
+  }
+
+  const loading = document.getElementById('loading');
+  const welcome = document.getElementById('welcome-state');
+  const results = document.getElementById('results');
+  const btn = document.getElementById('search-btn');
+
+  welcome.style.display = 'none';
+  results.classList.remove('visible');
+  loading.classList.add('active');
+  btn.disabled = true;
+
+  const msgs = [
+    'Searching Zillow, Realtor.com and MLS…',
+    'Scoring listings against client criteria…',
+    'Fetching school district data…',
+    'Pulling live market pricing…',
+    'Ranking top matches…',
+  ];
+  let mi = 0;
+  const rot = setInterval(() => {
+    document.getElementById('loading-text').textContent = msgs[(++mi) % msgs.length];
+  }, 800);
+
+  const data = await runAISearch(fullPrompt, clientMeta[clientId] || null);
+  lastResults = data;
+
+  clearInterval(rot);
+  loading.classList.remove('active');
+  btn.disabled = false;
+
+  renderFullResults(data);
+}
+
+function renderFullResults(data) {
+  document.getElementById('results-intro').textContent = data.intro || '';
+
+  if (data.market_context) {
+    const mc = data.market_context;
+    document.getElementById('mctx-content').innerHTML = `
+      <div><div class="mctx-item-label">Median price</div><div class="mctx-item-val">${typeof mc.median_price==='number'?'$'+mc.median_price.toLocaleString():mc.median_price||'—'}</div></div>
+      <div><div class="mctx-item-label">Price range</div><div class="mctx-item-val">${mc.price_range||'—'}</div></div>
+      <div><div class="mctx-item-label">Avg days on market</div><div class="mctx-item-val">${mc.avg_dom||'—'}d</div></div>
+      <div><div class="mctx-item-label">Top match score</div><div class="mctx-item-val green">${data.listings[0]?.score||'—'}/100</div></div>`;
+    document.getElementById('market-ctx').style.display = 'block';
+  }
+
+  const list = document.getElementById('results-list');
+  list.innerHTML = '';
+  (data.listings || []).forEach((l, i) => {
+    const isSale = l.type === 'sale';
+    const scoreW = Math.min(100, l.score || 0);
+    const tags = (l.tags || []).map(t =>
+      `<span class="ltag${/best|top|cheapest|most popular/i.test(t)?' featured':''}">${t}</span>`
+    ).join('');
+    list.innerHTML += `
+    <div class="result-card">
+      <div class="result-rank ${i===0?'top':''}">${i+1}</div>
+      <div class="result-thumb">${l.icon || '🏠'}</div>
+      <div class="result-body">
+        <div class="result-head">
+          <div>
+            <span class="badge ${isSale?'badge-green':'badge-blue'}" style="font-size:9px;margin-right:5px;">${isSale?'FOR SALE':'FOR RENT'}</span>
+            <span class="result-addr">${l.addr}</span>
+          </div>
+          <div class="result-price">${l.price_display||('$'+(l.price||0).toLocaleString())}</div>
+        </div>
+        <div class="result-detail">${l.detail||''}</div>
+        <div class="result-score-row">
+          <span class="result-score-label">Match</span>
+          <div class="score-bar-wrap"><div class="score-bar" style="width:${scoreW}%"></div></div>
+          <span class="result-score-val">${l.score}/100</span>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div class="listing-tags">${tags}</div>
+          <div class="result-actions">
+            <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openModal('share-modal')">Share</button>
+            <a href="schedule.html?new=1&address=${encodeURIComponent(l.addr)}" class="btn btn-ghost btn-sm">Schedule</a>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  });
+
+  document.getElementById('results').classList.add('visible');
+}
+</script>
+</body>
+</html>
